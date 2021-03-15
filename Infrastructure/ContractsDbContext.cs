@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -31,7 +32,9 @@ namespace Infrastructure
 
         public DbSet<BillParam> BillParams { get; set; }
 
-        //public DbSet<BillParamType> BillParamTypes { get; set; }
+
+
+        public DbSet<FakeEntityLink> FakeEntityLinks { get; set; }
 
 
         public DbSet<FakeEntity> FakeEntities { get; set; }
@@ -84,7 +87,14 @@ namespace Infrastructure
 
             });
 
-         //   modelBuilder.Entity<BillParam>().Property(p => p.BillParamTypeEnum).HasConversion<int>();
+            modelBuilder.Entity<FakeEntityLink>(entity =>
+            {
+                entity.HasKey(c => new { c.FakeEntityId, c.BillParamTypeEnum2 });
+                entity.HasOne(link => link.FakeEntity).WithMany();
+               // entity.HasOne(link => link.BillParamTypeEnum).WithMany().HasForeignKey(p => p.BillParamTypeEnumId);
+                //  entity.Property(p => p.BillParamTypeEnum).HasConversion<int>();
+            }
+                );
 
 
             modelBuilder.Entity<ContractKind>().HasData(
@@ -119,14 +129,14 @@ namespace Infrastructure
               }
               );
 
-            //modelBuilder.Entity<BillParamType>().HasData(
-            // new BillParamType[] {
-            //    new BillParamType (1,"Ценовая категория"),
-            //    new BillParamType (2,"Тарифный уровень напряжения"),
-            //    new BillParamType (3,"Знак вхождения"),
-            //    new BillParamType (4,"Категория мощности"),
-            // }
-            // );
+            modelBuilder.Entity<BillParamTypeEnum>().HasData(
+             new BillParamTypeEnum[] {
+                BillParamTypeEnum.PriceCategory,
+                BillParamTypeEnum.VoltageTarifLevel,
+                BillParamTypeEnum.Sign,
+                BillParamTypeEnum.VolumeCategory
+             }
+             );
         }
 
 

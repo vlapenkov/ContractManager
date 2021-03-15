@@ -17,4 +17,12 @@ namespace Domain.Entities
         {
         }
     }
+
+    public enum BillParamTypeEnum2
+    {
+        PriceCategory=1,
+        VoltageTarifLevel,
+        Sign,
+        VolumeCategory
+    }
 }

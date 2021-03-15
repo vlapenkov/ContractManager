@@ -4,14 +4,16 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210315153107_billparams_seed")]
+    partial class billparams_seed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -291,10 +293,12 @@ namespace Infrastructure.Migrations
                     b.Property<int>("FakeEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("BillParamTypeEnum2")
+                    b.Property<int>("BillParamTypeEnumId")
                         .HasColumnType("int");
 
-                    b.HasKey("FakeEntityId", "BillParamTypeEnum2");
+                    b.HasKey("FakeEntityId", "BillParamTypeEnumId");
+
+                    b.HasIndex("BillParamTypeEnumId");
 
                     b.ToTable("FakeEntityLinks");
                 });
@@ -458,11 +462,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.FakeEntityLink", b =>
                 {
+                    b.HasOne("Domain.Entities.BillParamTypeEnum", "BillParamTypeEnum")
+                        .WithMany()
+                        .HasForeignKey("BillParamTypeEnumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.FakeEntity", "FakeEntity")
                         .WithMany()
                         .HasForeignKey("FakeEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BillParamTypeEnum");
 
                     b.Navigation("FakeEntity");
                 });

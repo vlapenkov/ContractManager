@@ -4,14 +4,16 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210315162057_fakelinks_delete")]
+    partial class fakelinks_delete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,19 +288,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("FakeEntities");
                 });
 
-            modelBuilder.Entity("Domain.FakeEntityLink", b =>
-                {
-                    b.Property<int>("FakeEntityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BillParamTypeEnum2")
-                        .HasColumnType("int");
-
-                    b.HasKey("FakeEntityId", "BillParamTypeEnum2");
-
-                    b.ToTable("FakeEntityLinks");
-                });
-
             modelBuilder.Entity("Domain.Organization", b =>
                 {
                     b.Property<int>("Id")
@@ -454,17 +443,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("BillPoint");
 
                     b.Navigation("EnergyLinkObject");
-                });
-
-            modelBuilder.Entity("Domain.FakeEntityLink", b =>
-                {
-                    b.HasOne("Domain.FakeEntity", "FakeEntity")
-                        .WithMany()
-                        .HasForeignKey("FakeEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FakeEntity");
                 });
 
             modelBuilder.Entity("Domain.BillObject", b =>
