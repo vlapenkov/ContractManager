@@ -45,7 +45,7 @@ namespace Domain
 
         }
 
-        public void AddParameter(int billPointId, BillParamTypeEnum paramType, int value)
+        public void AddParameter(int billPointId, int paramType, int value)
         {
             var link1 = EnergyLinkObjectsToBillPoints.FirstOrDefault(link => link.BillPointId == billPointId );
 

@@ -141,7 +141,7 @@ namespace ContractManager.Controllers
 
             //var param2  =_db.BillParamTypes.Find(3);
             
-            eloFound.AddParameter(numberOfBillPoint, BillParamTypeEnum.VoltageTarifLevel, 30);
+            eloFound.AddParameter(numberOfBillPoint, 2, 30);
 
 
 

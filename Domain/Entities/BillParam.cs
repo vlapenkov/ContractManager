@@ -11,21 +11,22 @@ namespace Domain
 
        // public BillParamType BillParamType { get; private set; }
         public int EnergyLinkObjectToBillPointId { get; private set; }
-       // public int BillParamTypeId { get; private set; }
+        public int BillParamTypeId { get; private set; }
 
-        public BillParamTypeEnum BillParamTypeEnum { get; private set; } = BillParamTypeEnum.PriceCategory;
+        //public BillParamTypeEnum BillParamTypeEnum { get; private set; } = BillParamTypeEnum.PriceCategory;
 
         public int Value { get; private set; }
 
         private BillParam() { }
         public BillParam(
             //   EnergyLinkObjectToBillPoint energyLinkObjectToBillPoint, 
-            BillParamTypeEnum billParamType, 
+            
+            int billParamTypeId, 
             int value)
         {
             //   EnergyLinkObjectToBillPoint = energyLinkObjectToBillPoint;
-            BillParamTypeEnum = billParamType;
-            Value = value;
+            BillParamTypeId = billParamTypeId;
+               Value = value;
         }
 
     }

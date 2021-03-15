@@ -74,15 +74,17 @@ namespace Infrastructure
 
             modelBuilder.Entity<BillParam>(entity => {
 
-                entity.HasKey(c => new { c.EnergyLinkObjectToBillPointId /*, c.BillParamTypeEnum*/ });
+                entity.HasKey(c => new { c.EnergyLinkObjectToBillPointId , c.BillParamTypeId });
 
                 entity.HasOne(link => link.EnergyLinkObjectToBillPoint).WithMany(bp => bp.BillParams)
                 .HasForeignKey(bo => bo.EnergyLinkObjectToBillPointId);
 
-                //entity.OwnsOne(bp => bp.BillParamTypeE);
+               // entity.OwnsOne(bp => bp.BillParamTypeEnum);
                 //entity.HasOne(link => link.BillParamType).WithMany();
 
             });
+
+         //   modelBuilder.Entity<BillParam>().Property(p => p.BillParamTypeEnum).HasConversion<int>();
 
 
             modelBuilder.Entity<ContractKind>().HasData(
