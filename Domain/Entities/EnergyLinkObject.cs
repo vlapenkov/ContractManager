@@ -20,29 +20,40 @@ namespace Domain
         private readonly List<EnergyLinkObjectToBillPoint> _energyLinkObjectsToBillPoints = new List<EnergyLinkObjectToBillPoint>();
         public virtual IReadOnlyCollection<EnergyLinkObjectToBillPoint> EnergyLinkObjectsToBillPoints => _energyLinkObjectsToBillPoints;
 
-
+        /// <summary>
+        /// Добавляет ссылку к точке поставки с определенной даты
+        /// </summary>
+        /// <param name="billPointId">id точки поставки</param>
+        /// <param name="sDate"></param>
+        /// <param name="eDate"></param>
         public void AddBillPoint(int billPointId, DateTime sDate, DateTime? eDate = null)
         {
             var link = new EnergyLinkObjectToBillPoint(billPointId, this, sDate, eDate);
             _energyLinkObjectsToBillPoints.Add(link);
         }
 
+        /// <summary>
+        /// Удаляет ссылку к точке поставки с определенной даты
+        /// </summary>
+        /// <param name="billPointId">id точки поставки</param>
+        /// <param name="eDate"></param>
+        public void DisableLink(int billPointId, DateTime eDate)
+        {
+            var link1 = EnergyLinkObjectsToBillPoints.FirstOrDefault(link => link.BillPointId == billPointId);
+            link1.SetEDate(eDate);
+
+        }
+
         public void AddParameter(int billPointId, BillParamType paramType, int value)
         {
-            var link1 = EnergyLinkObjectsToBillPoints.FirstOrDefault(link => link.BillPointId == billPointId /*&& link.EnergyLinkObjectId == this.Id*/);
+            var link1 = EnergyLinkObjectsToBillPoints.FirstOrDefault(link => link.BillPointId == billPointId );
 
             if (link1 == null) throw new Exception("Не найдена связь");
             link1.BillParams.Add(new BillParam(paramType, value));
         }
 
+
         
-        //public void DisableEnergyLinkObject(int eloId, DateTime eDate)
-        //{
-        //    var link = this.EnergyLinkObjectsToBillPoints.First(bo => bo. == this.Id && bo.EnergyLinkObjectId == this.Id);
-        //    link.SetEDate(eDate);
-        //    //var link = new BillObjectToEnergyLinkObject(this, elo, sDate, eDate);
-        //    //_billObjectsToEnergyLinkObjects.Add(link);
-        //}
-        
+
     }
 }

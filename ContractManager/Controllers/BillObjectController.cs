@@ -135,11 +135,48 @@ namespace ContractManager.Controllers
                 billobject.AddEnergyLinkObject(eloFound, DateTime.Now.Date);
             }
 
-            int numberOfBillPoint = 1005;
-        //    eloFound.AddBillPoint(numberOfBillPoint, DateTime.Now.Date.AddDays(-1), DateTime.Now.Date.AddDays(1));
+            int numberOfBillPoint = 1006;
+            eloFound.AddBillPoint(numberOfBillPoint, DateTime.Now.Date.AddDays(-1));
 
             var param2  =_db.BillParamTypes.Find(3);
             eloFound.AddParameter(numberOfBillPoint, param2, 30);
+
+
+
+            _db.SaveChanges();
+        }
+
+        [HttpPut("bo/disablelink/{id}")]
+        public void Put5(int id)
+        {
+
+            string nameOfBillObject = "Новый объект расчета для договора #7";
+
+            var contract = _repo.GetContract(1);
+
+            BillObject billobject = contract.BillObjects.FirstOrDefault(x => x.Name == nameOfBillObject);
+
+            if (billobject == null)
+            {
+                billobject = new BillObject(nameOfBillObject);
+                contract.AddBillObject(billobject);
+            }
+
+            string nameOfEnergyLinkObject = "elo #7";
+
+            EnergyLinkObject eloFound = billobject.BillObjectsToEnergyLinkObjects
+                 .Select(p => p.EnergyLinkObject)
+                 .FirstOrDefault(x => x.Name == nameOfEnergyLinkObject);
+            if (eloFound == null)
+            {
+                eloFound = new EnergyLinkObject(nameOfEnergyLinkObject);
+                billobject.AddEnergyLinkObject(eloFound, DateTime.Now.Date);
+            }
+
+            int numberOfBillPoint = 1006;
+                eloFound.DisableLink(numberOfBillPoint, DateTime.Now.AddDays(1));
+
+          
 
 
 
