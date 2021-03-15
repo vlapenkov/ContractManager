@@ -32,7 +32,7 @@ namespace Infrastructure
                  .ThenInclude(bo2elo => bo2elo.EnergyLinkObject)
                  .ThenInclude(bo2elo => bo2elo.EnergyLinkObjectsToBillPoints)
                  .ThenInclude(elotbp => elotbp.BillParams)
-                 .ThenInclude(bp => bp.BillParamType)
+                // .ThenInclude(bp => bp.BillParamType)
                  .FirstOrDefault(x => x.Id == id);
             
             return result;

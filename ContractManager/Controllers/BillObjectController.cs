@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Entities;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -138,8 +139,9 @@ namespace ContractManager.Controllers
             int numberOfBillPoint = 1006;
             eloFound.AddBillPoint(numberOfBillPoint, DateTime.Now.Date.AddDays(-1));
 
-            var param2  =_db.BillParamTypes.Find(3);
-            eloFound.AddParameter(numberOfBillPoint, param2, 30);
+            //var param2  =_db.BillParamTypes.Find(3);
+            
+            eloFound.AddParameter(numberOfBillPoint, BillParamTypeEnum.VoltageTarifLevel, 30);
 
 
 

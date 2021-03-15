@@ -31,7 +31,7 @@ namespace Infrastructure
 
         public DbSet<BillParam> BillParams { get; set; }
 
-        public DbSet<BillParamType> BillParamTypes { get; set; }
+        //public DbSet<BillParamType> BillParamTypes { get; set; }
 
 
         public DbSet<FakeEntity> FakeEntities { get; set; }
@@ -74,13 +74,14 @@ namespace Infrastructure
 
             modelBuilder.Entity<BillParam>(entity => {
 
-                entity.HasKey(c => new { c.EnergyLinkObjectToBillPointId, c.BillParamTypeId });
+                entity.HasKey(c => new { c.EnergyLinkObjectToBillPointId /*, c.BillParamTypeEnum*/ });
 
                 entity.HasOne(link => link.EnergyLinkObjectToBillPoint).WithMany(bp => bp.BillParams)
                 .HasForeignKey(bo => bo.EnergyLinkObjectToBillPointId);
 
-                entity.HasOne(link => link.BillParamType).WithMany();
-                
+                //entity.OwnsOne(bp => bp.BillParamTypeE);
+                //entity.HasOne(link => link.BillParamType).WithMany();
+
             });
 
 
@@ -116,14 +117,14 @@ namespace Infrastructure
               }
               );
 
-            modelBuilder.Entity<BillParamType>().HasData(
-             new BillParamType[] {
-                new BillParamType (1,"Ценовая категория"),
-                new BillParamType (2,"Тарифный уровень напряжения"),
-                new BillParamType (3,"Знак вхождения"),
-                new BillParamType (4,"Категория мощности"),
-             }
-             );
+            //modelBuilder.Entity<BillParamType>().HasData(
+            // new BillParamType[] {
+            //    new BillParamType (1,"Ценовая категория"),
+            //    new BillParamType (2,"Тарифный уровень напряжения"),
+            //    new BillParamType (3,"Знак вхождения"),
+            //    new BillParamType (4,"Категория мощности"),
+            // }
+            // );
         }
 
 

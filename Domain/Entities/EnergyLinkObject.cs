@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,7 +45,7 @@ namespace Domain
 
         }
 
-        public void AddParameter(int billPointId, BillParamType paramType, int value)
+        public void AddParameter(int billPointId, BillParamTypeEnum paramType, int value)
         {
             var link1 = EnergyLinkObjectsToBillPoints.FirstOrDefault(link => link.BillPointId == billPointId );
 
