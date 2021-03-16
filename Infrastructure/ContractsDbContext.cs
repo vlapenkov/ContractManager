@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain.Enums;
 
 namespace Infrastructure
 {
@@ -107,9 +108,11 @@ namespace Infrastructure
 
             modelBuilder.Entity<Organization>().HasData(
                new Organization[] {
-                new Organization (1,"ТНЭ"),
-                new Organization (2,"КТК"),
-                new Organization (3,"Дружба"),
+                new Organization (1,"ТНЭ",OrganizationTypeEnum.SalesService),
+                new Organization (2,"КТК", OrganizationTypeEnum.Consumer),
+                new Organization (3,"Дружба", OrganizationTypeEnum.Consumer),
+                new Organization (4,"Рога и копыта", OrganizationTypeEnum.None),
+                new Organization (5,"Башкирэнерго", OrganizationTypeEnum.SalesService | OrganizationTypeEnum.WireService),
                }
                );
 
