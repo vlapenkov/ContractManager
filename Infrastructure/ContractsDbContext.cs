@@ -21,7 +21,7 @@ namespace Infrastructure
         public DbSet<ContractKind> ContractKinds { get; set; }        
         public DbSet<Contract> Contracts { get; set; }        
         public DbSet<ContractParticipant> ContractParticipants { get; set; }
-        public DbSet<ParticipantType> ParticipantTypes { get; set; }        
+       // public DbSet<ParticipantType> ParticipantTypes { get; set; }        
         public DbSet<Organization> Organizations { get; set; }
 
         public DbSet<BillObject> BillObjects { get; set; }
@@ -49,7 +49,7 @@ namespace Infrastructure
             //base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Contract>(entity => entity.HasOne(p => p.ContractKind).WithMany());
 
-            modelBuilder.Entity<ContractParticipant>(entity => entity.HasOne(p => p.ParticipantType).WithMany());
+           // modelBuilder.Entity<ContractParticipant>(entity => entity.HasOne(p => p.ParticipantType).WithMany());
 
             modelBuilder.Entity<ContractParticipant>(entity => entity.HasOne(p => p.Organization).WithMany());
 
@@ -99,14 +99,14 @@ namespace Infrastructure
                 }
                 );
 
-            modelBuilder.Entity<ParticipantType>().HasData(
-                new ParticipantType[] {
-                new ParticipantType (1,"Продавец электроэнергии"),
-                new ParticipantType (2,"Покупатель электроэнергии"),
-                new ParticipantType (3,"Население"),
-                new ParticipantType (4,"Организация оказывающая услуги населению"),
-                }
-                );
+            //modelBuilder.Entity<ParticipantType>().HasData(
+            //    new ParticipantType[] {
+            //    new ParticipantType (1,"Продавец электроэнергии"),
+            //    new ParticipantType (2,"Покупатель электроэнергии"),
+            //    new ParticipantType (3,"Население"),
+            //    new ParticipantType (4,"Организация оказывающая услуги населению"),
+            //    }
+            //    );
 
             modelBuilder.Entity<Organization>().HasData(
                new Organization[] {
