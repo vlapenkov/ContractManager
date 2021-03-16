@@ -40,7 +40,7 @@ namespace ContractManager.Controllers
         [HttpPost("{organizationId1}/{organizationId2}")]
         public void Post(int organizationId1, int organizationId2)
         {
-            var cKind1 = _db.ContractKinds.Find(1);
+            //var cKind1 = _db.ContractKinds.Find(1);
             var org1 = _db.Organizations.Find(organizationId1);
             var org2 = _db.Organizations.Find(organizationId2);
             
@@ -49,7 +49,7 @@ namespace ContractManager.Controllers
             var cp2 = new ContractParticipant(ParticipantType.Customer, org2);
 
             List<ContractParticipant> participants = new List<ContractParticipant> { cp1, cp2 };
-            var contract = new Contract(DateTime.Now, cKind1,  participants);
+            var contract = new Contract(DateTime.Now, ContractKind.EnergySupply,  participants);
             _db.Contracts.Add(contract);
             _db.SaveChanges();
 

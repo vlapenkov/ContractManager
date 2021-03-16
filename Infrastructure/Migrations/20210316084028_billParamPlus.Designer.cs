@@ -4,14 +4,16 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210316084028_billParamPlus")]
+    partial class billParamPlus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,7 +123,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("ContractKind")
+                    b.Property<int?>("ContractKindId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("SDate")
@@ -129,7 +131,36 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ContractKindId");
+
                     b.ToTable("Contracts");
+                });
+
+            modelBuilder.Entity("Domain.ContractKind", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContractKinds");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Договор энергоснабжения"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Договор купили-продажи"
+                        });
                 });
 
             modelBuilder.Entity("Domain.ContractParticipant", b =>
@@ -287,6 +318,15 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("EnergyLinkObjectToBillPoint");
+                });
+
+            modelBuilder.Entity("Domain.Contract", b =>
+                {
+                    b.HasOne("Domain.ContractKind", "ContractKind")
+                        .WithMany()
+                        .HasForeignKey("ContractKindId");
+
+                    b.Navigation("ContractKind");
                 });
 
             modelBuilder.Entity("Domain.ContractParticipant", b =>

@@ -18,10 +18,10 @@ namespace Infrastructure
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public DbSet<ContractKind> ContractKinds { get; set; }        
+        //public DbSet<ContractKind> ContractKinds { get; set; }        
         public DbSet<Contract> Contracts { get; set; }        
         public DbSet<ContractParticipant> ContractParticipants { get; set; }
-       // public DbSet<ParticipantType> ParticipantTypes { get; set; }        
+          
         public DbSet<Organization> Organizations { get; set; }
 
         public DbSet<BillObject> BillObjects { get; set; }
@@ -30,7 +30,7 @@ namespace Infrastructure
 
         public DbSet<BillPoint> BillPoints { get; set; }
 
-      //  public DbSet<BillParam> BillParams { get; set; }
+        public DbSet<BillParam> BillParams { get; set; }
 
 
 
@@ -47,7 +47,7 @@ namespace Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Contract>(entity => entity.HasOne(p => p.ContractKind).WithMany());
+           // modelBuilder.Entity<Contract>(entity => entity.HasOne(p => p.ContractKind).WithMany());
 
            // modelBuilder.Entity<ContractParticipant>(entity => entity.HasOne(p => p.ParticipantType).WithMany());
 
@@ -89,15 +89,12 @@ namespace Infrastructure
 
           
 
-
-
-
-            modelBuilder.Entity<ContractKind>().HasData(
-                new ContractKind[] {
-                new ContractKind (1,"Договор энергоснабжения"),
-                new ContractKind (2,"Договор купили-продажи")
-                }
-                );
+            //modelBuilder.Entity<ContractKind>().HasData(
+            //    new ContractKind[] {
+            //    new ContractKind (1,"Договор энергоснабжения"),
+            //    new ContractKind (2,"Договор купили-продажи")
+            //    }
+            //    );
 
             //modelBuilder.Entity<ParticipantType>().HasData(
             //    new ParticipantType[] {
