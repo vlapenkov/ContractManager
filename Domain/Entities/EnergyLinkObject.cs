@@ -45,12 +45,17 @@ namespace Domain
 
         }
 
-        public void AddParameter(int billPointId, int paramType, int value)
+        public void AddParameter(int billPointId, BillParamType paramType, int value)
         {
-            var link1 = EnergyLinkObjectsToBillPoints.FirstOrDefault(link => link.BillPointId == billPointId );
+            //
+            var link = EnergyLinkObjectsToBillPoints.FirstOrDefault(elo2bp => elo2bp.BillPointId == billPointId );
 
-            if (link1 == null) throw new Exception("Не найдена связь");
-            link1.BillParams.Add(new BillParam(paramType, value));
+            if (link == null) throw new Exception("Не найдена связь");
+
+            if (link.BillParams.Any(x => x.BillParamType == paramType))
+                throw new Exception($"Параметр {paramType} уже существует") ;
+
+            link.BillParams.Add(new BillParam(paramType, value));
         }
 
 

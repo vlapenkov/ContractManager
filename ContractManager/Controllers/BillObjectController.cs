@@ -137,11 +137,13 @@ namespace ContractManager.Controllers
             }
 
             int numberOfBillPoint = 1006;
-            eloFound.AddBillPoint(numberOfBillPoint, DateTime.Now.Date.AddDays(-1));
 
-            //var param2  =_db.BillParamTypes.Find(3);
+            var billpointFound = eloFound.EnergyLinkObjectsToBillPoints.FirstOrDefault(p => p.BillPointId == numberOfBillPoint);            
+
+            if (billpointFound == null)
+            eloFound.AddBillPoint(numberOfBillPoint, DateTime.Now.Date.AddDays(-1));            
             
-            eloFound.AddParameter(numberOfBillPoint, 2, 30);
+            eloFound.AddParameter(numberOfBillPoint, BillParamType.VoltageTarifLevel, 30);
 
 
 

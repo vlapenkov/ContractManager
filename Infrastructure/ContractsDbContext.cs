@@ -30,11 +30,11 @@ namespace Infrastructure
 
         public DbSet<BillPoint> BillPoints { get; set; }
 
-        public DbSet<BillParam> BillParams { get; set; }
+      //  public DbSet<BillParam> BillParams { get; set; }
 
 
 
-        public DbSet<FakeEntityLink> FakeEntityLinks { get; set; }
+       // public DbSet<FakeEntityLink> FakeEntityLinks { get; set; }
 
 
         public DbSet<FakeEntity> FakeEntities { get; set; }
@@ -77,7 +77,7 @@ namespace Infrastructure
 
             modelBuilder.Entity<BillParam>(entity => {
 
-                entity.HasKey(c => new { c.EnergyLinkObjectToBillPointId , c.BillParamTypeId });
+                entity.HasKey(c => new { c.EnergyLinkObjectToBillPointId , c.BillParamType });
 
                 entity.HasOne(link => link.EnergyLinkObjectToBillPoint).WithMany(bp => bp.BillParams)
                 .HasForeignKey(bo => bo.EnergyLinkObjectToBillPointId);
@@ -87,14 +87,9 @@ namespace Infrastructure
 
             });
 
-            modelBuilder.Entity<FakeEntityLink>(entity =>
-            {
-                entity.HasKey(c => new { c.FakeEntityId, c.BillParamTypeEnum2 });
-                entity.HasOne(link => link.FakeEntity).WithMany();
-               // entity.HasOne(link => link.BillParamTypeEnum).WithMany().HasForeignKey(p => p.BillParamTypeEnumId);
-                //  entity.Property(p => p.BillParamTypeEnum).HasConversion<int>();
-            }
-                );
+          
+
+
 
 
             modelBuilder.Entity<ContractKind>().HasData(
@@ -128,7 +123,7 @@ namespace Infrastructure
                 new BillPoint (3,"bp1",3),
               }
               );
-
+            /*
             modelBuilder.Entity<BillParamTypeEnum>().HasData(
              new BillParamTypeEnum[] {
                 BillParamTypeEnum.PriceCategory,
@@ -136,7 +131,7 @@ namespace Infrastructure
                 BillParamTypeEnum.Sign,
                 BillParamTypeEnum.VolumeCategory
              }
-             );
+             ); */
         }
 
 
