@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Domain
 {
+    /// <summary>
+    /// Параметры связи точки поставки и точки измерения по периоду
+    /// </summary>
   public class BillParam
     {
         public EnergyLinkObjectToBillPoint EnergyLinkObjectToBillPoint { get; private set; }

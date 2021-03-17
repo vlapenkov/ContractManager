@@ -15,11 +15,12 @@ namespace Domain
             Name = name;
         }
 
-        private readonly List<BillObjectToEnergyLinkObject> _billObjectsToEnergyLinkObjects = new List<BillObjectToEnergyLinkObject>();
-        public virtual IReadOnlyCollection<BillObjectToEnergyLinkObject> BillObjectsToEnergyLinkObjects => _billObjectsToEnergyLinkObjects;
+        //private readonly List<BillObjectToEnergyLinkObject> _billObjectsToEnergyLinkObjects = new List<BillObjectToEnergyLinkObject>();
+        //public virtual IReadOnlyCollection<BillObjectToEnergyLinkObject> BillObjectsToEnergyLinkObjects => _billObjectsToEnergyLinkObjects;
 
-        private readonly List<EnergyLinkObjectToBillPoint> _energyLinkObjectsToBillPoints = new List<EnergyLinkObjectToBillPoint>();
-        public virtual IReadOnlyCollection<EnergyLinkObjectToBillPoint> EnergyLinkObjectsToBillPoints => _energyLinkObjectsToBillPoints;
+        public virtual ICollection<BillObjectToEnergyLinkObject> BillObjectsToEnergyLinkObjects { get; private set; } = new List<BillObjectToEnergyLinkObject>();
+        public virtual ICollection<EnergyLinkObjectToBillPoint> EnergyLinkObjectsToBillPoints { get; private set; } = new List<EnergyLinkObjectToBillPoint>();
+        public virtual ICollection<BillSideToBillPoint> BillSideToBillPoints { get; private set; } = new List<BillSideToBillPoint>();
 
         /// <summary>
         /// Добавляет ссылку к точке поставки с определенной даты
@@ -30,7 +31,7 @@ namespace Domain
         public void AddBillPoint(int billPointId, DateTime sDate, DateTime? eDate = null)
         {
             var link = new EnergyLinkObjectToBillPoint(billPointId, this, sDate, eDate);
-            _energyLinkObjectsToBillPoints.Add(link);
+            EnergyLinkObjectsToBillPoints.Add(link);
         }
 
         /// <summary>
@@ -42,8 +43,8 @@ namespace Domain
         {
             var link1 = EnergyLinkObjectsToBillPoints.FirstOrDefault(link => link.BillPointId == billPointId);
             link1.SetEDate(eDate);
-
         }
+
 
         public void AddParameter(int billPointId, BillParamType paramType, int value)
         {

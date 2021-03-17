@@ -79,9 +79,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.BillPoint", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -200,22 +198,28 @@ namespace Infrastructure.Migrations
                     b.ToTable("EnergyLinkObjectToBillPoint");
                 });
 
-            modelBuilder.Entity("Domain.FakeEntity", b =>
+            modelBuilder.Entity("Domain.Entities.BillSideToBillPoint", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("ContractId")
+                    b.Property<int>("EnergyLinkObjectId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("BillPointId")
+                        .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime>("SDate")
+                        .HasColumnType("datetime2");
 
-                    b.ToTable("FakeEntities");
+                    b.Property<DateTime?>("EDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TypeSide")
+                        .HasColumnType("int");
+
+                    b.HasKey("EnergyLinkObjectId", "BillPointId", "SDate");
+
+                    b.HasIndex("BillPointId");
+
+                    b.ToTable("BillSideToBillPoints");
                 });
 
             modelBuilder.Entity("Domain.Organization", b =>
@@ -341,6 +345,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("EnergyLinkObject");
                 });
 
+            modelBuilder.Entity("Domain.Entities.BillSideToBillPoint", b =>
+                {
+                    b.HasOne("Domain.BillPoint", "BillPoint")
+                        .WithMany("BillSideToBillPoints")
+                        .HasForeignKey("BillPointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.EnergyLinkObject", "EnergyLinkObject")
+                        .WithMany("BillSideToBillPoints")
+                        .HasForeignKey("EnergyLinkObjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BillPoint");
+
+                    b.Navigation("EnergyLinkObject");
+                });
+
             modelBuilder.Entity("Domain.BillObject", b =>
                 {
                     b.Navigation("BillObjectsToEnergyLinkObjects");
@@ -348,6 +371,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.BillPoint", b =>
                 {
+                    b.Navigation("BillSideToBillPoints");
+
                     b.Navigation("EnergyLinkObjectsToBillPoints");
                 });
 
@@ -361,6 +386,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.EnergyLinkObject", b =>
                 {
                     b.Navigation("BillObjectsToEnergyLinkObjects");
+
+                    b.Navigation("BillSideToBillPoints");
 
                     b.Navigation("EnergyLinkObjectsToBillPoints");
                 });

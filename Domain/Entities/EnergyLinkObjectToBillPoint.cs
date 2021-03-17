@@ -10,8 +10,8 @@ namespace Domain
 
         public EnergyLinkObject EnergyLinkObject { get; private set; }
 
-        private readonly List<BillParam> _billParams = new List<BillParam>();
-        public virtual IList<BillParam> BillParams => _billParams;
+       // private readonly List<BillParam> _billParams = new List<BillParam>();
+        public virtual IList<BillParam> BillParams { get; private set; } = new List<BillParam>();
 
 
         public int EnergyLinkObjectId { get; private set; }

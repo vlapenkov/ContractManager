@@ -29,16 +29,13 @@ namespace Infrastructure
         public DbSet<EnergyLinkObject> EnergyLinkObjects { get; set; }
         public DbSet<BillObjectToEnergyLinkObject> BillObjectToEnergyLinkObjects { get; set; }
 
+        public DbSet<BillSideToBillPoint> BillSideToBillPoints { get; set; }
+
         public DbSet<BillPoint> BillPoints { get; set; }
 
         public DbSet<BillParam> BillParams { get; set; }
 
 
-
-       // public DbSet<FakeEntityLink> FakeEntityLinks { get; set; }
-
-
-        public DbSet<FakeEntity> FakeEntities { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -65,6 +62,18 @@ namespace Infrastructure
                 .HasForeignKey(bo => bo.EnergyLinkObjectId);
             });
 
+            modelBuilder.Entity<BillPoint>().Property(bp => bp.Id).ValueGeneratedNever();
+
+
+            modelBuilder.Entity<BillSideToBillPoint>(entity => {
+                entity.HasKey(c => new { c.EnergyLinkObjectId, c.BillPointId, c.SDate });
+                
+                entity.HasOne(link => link.EnergyLinkObject).WithMany(bs2bp => bs2bp.BillSideToBillPoints)
+                .HasForeignKey(link => link.EnergyLinkObjectId);
+                entity.HasOne(link => link.BillPoint).WithMany(elo => elo.BillSideToBillPoints)
+                .HasForeignKey(bo => bo.BillPointId);
+            });
+
             modelBuilder.Entity<EnergyLinkObjectToBillPoint>(entity => {
 
                 entity.HasKey(c => new { c.Id });
@@ -88,24 +97,7 @@ namespace Infrastructure
 
             });
 
-          
-
-            //modelBuilder.Entity<ContractKind>().HasData(
-            //    new ContractKind[] {
-            //    new ContractKind (1,"Договор энергоснабжения"),
-            //    new ContractKind (2,"Договор купили-продажи")
-            //    }
-            //    );
-
-            //modelBuilder.Entity<ParticipantType>().HasData(
-            //    new ParticipantType[] {
-            //    new ParticipantType (1,"Продавец электроэнергии"),
-            //    new ParticipantType (2,"Покупатель электроэнергии"),
-            //    new ParticipantType (3,"Население"),
-            //    new ParticipantType (4,"Организация оказывающая услуги населению"),
-            //    }
-            //    );
-
+            
             modelBuilder.Entity<Organization>().HasData(
                new Organization[] {
                 new Organization (1,"ТНЭ",OrganizationTypeEnum.SalesService),
@@ -123,15 +115,7 @@ namespace Infrastructure
                 new BillPoint (3,"bp1",3),
               }
               );
-            /*
-            modelBuilder.Entity<BillParamTypeEnum>().HasData(
-             new BillParamTypeEnum[] {
-                BillParamTypeEnum.PriceCategory,
-                BillParamTypeEnum.VoltageTarifLevel,
-                BillParamTypeEnum.Sign,
-                BillParamTypeEnum.VolumeCategory
-             }
-             ); */
+           
         }
 
 

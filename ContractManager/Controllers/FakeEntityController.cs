@@ -24,7 +24,7 @@ namespace ContractManager.Controllers
         [HttpPost]
         public void Post()
         {
-            var fe =_db.FakeEntities.Find(1);
+           // var fe =_db.FakeEntities.Find(1);
          //   _db.FakeEntityLinks.Add(new FakeEntityLink(fe, BillParamTypeEnum2.VoltageTarifLevel));
 
             _db.SaveChanges();

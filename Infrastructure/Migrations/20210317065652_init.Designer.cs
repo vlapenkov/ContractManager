@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    [Migration("20210316083147_ParticipantTypeEnum")]
-    partial class ParticipantTypeEnum
+    [Migration("20210317065652_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -75,15 +75,13 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("EnergyLinkObjectToBillPointId", "BillParamType");
 
-                    b.ToTable("BillParam");
+                    b.ToTable("BillParams");
                 });
 
             modelBuilder.Entity("Domain.BillPoint", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -123,7 +121,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("ContractKindId")
+                    b.Property<int>("ContractKind")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("SDate")
@@ -131,36 +129,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContractKindId");
-
                     b.ToTable("Contracts");
-                });
-
-            modelBuilder.Entity("Domain.ContractKind", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ContractKinds");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Договор энергоснабжения"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Договор купили-продажи"
-                        });
                 });
 
             modelBuilder.Entity("Domain.ContractParticipant", b =>
@@ -231,22 +200,28 @@ namespace Infrastructure.Migrations
                     b.ToTable("EnergyLinkObjectToBillPoint");
                 });
 
-            modelBuilder.Entity("Domain.FakeEntity", b =>
+            modelBuilder.Entity("Domain.Entities.BillSideToBillPoint", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("ContractId")
+                    b.Property<int>("EnergyLinkObjectId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("BillPointId")
+                        .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime>("SDate")
+                        .HasColumnType("datetime2");
 
-                    b.ToTable("FakeEntities");
+                    b.Property<DateTime?>("EDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TypeSide")
+                        .HasColumnType("int");
+
+                    b.HasKey("EnergyLinkObjectId", "BillPointId", "SDate");
+
+                    b.HasIndex("BillPointId");
+
+                    b.ToTable("BillSideToBillPoints");
                 });
 
             modelBuilder.Entity("Domain.Organization", b =>
@@ -259,6 +234,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrganizationType")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Organizations");
@@ -267,17 +245,32 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "ТНЭ"
+                            Name = "ТНЭ",
+                            OrganizationType = 1
                         },
                         new
                         {
                             Id = 2,
-                            Name = "КТК"
+                            Name = "КТК",
+                            OrganizationType = 4
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Дружба"
+                            Name = "Дружба",
+                            OrganizationType = 4
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Рога и копыта",
+                            OrganizationType = 0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Башкирэнерго",
+                            OrganizationType = 3
                         });
                 });
 
@@ -320,15 +313,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("EnergyLinkObjectToBillPoint");
                 });
 
-            modelBuilder.Entity("Domain.Contract", b =>
-                {
-                    b.HasOne("Domain.ContractKind", "ContractKind")
-                        .WithMany()
-                        .HasForeignKey("ContractKindId");
-
-                    b.Navigation("ContractKind");
-                });
-
             modelBuilder.Entity("Domain.ContractParticipant", b =>
                 {
                     b.HasOne("Domain.Contract", null)
@@ -363,6 +347,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("EnergyLinkObject");
                 });
 
+            modelBuilder.Entity("Domain.Entities.BillSideToBillPoint", b =>
+                {
+                    b.HasOne("Domain.BillPoint", "BillPoint")
+                        .WithMany("BillSideToBillPoints")
+                        .HasForeignKey("BillPointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.EnergyLinkObject", "EnergyLinkObject")
+                        .WithMany("BillSideToBillPoints")
+                        .HasForeignKey("EnergyLinkObjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BillPoint");
+
+                    b.Navigation("EnergyLinkObject");
+                });
+
             modelBuilder.Entity("Domain.BillObject", b =>
                 {
                     b.Navigation("BillObjectsToEnergyLinkObjects");
@@ -370,6 +373,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.BillPoint", b =>
                 {
+                    b.Navigation("BillSideToBillPoints");
+
                     b.Navigation("EnergyLinkObjectsToBillPoints");
                 });
 
@@ -383,6 +388,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.EnergyLinkObject", b =>
                 {
                     b.Navigation("BillObjectsToEnergyLinkObjects");
+
+                    b.Navigation("BillSideToBillPoints");
 
                     b.Navigation("EnergyLinkObjectsToBillPoints");
                 });

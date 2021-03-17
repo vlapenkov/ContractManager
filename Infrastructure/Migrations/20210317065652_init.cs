@@ -8,16 +8,30 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ContractKinds",
+                name: "BillPoints",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TnePointId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BillPoints", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Contracts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ContractKind = table.Column<int>(type: "int", nullable: false),
+                    SDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ContractKinds", x => x.Id);
+                    table.PrimaryKey("PK_Contracts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,44 +53,12 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrganizationType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Organizations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ParticipantTypes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ParticipantTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Contracts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ContractKindId = table.Column<int>(type: "int", nullable: true),
-                    SDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Contracts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Contracts_ContractKinds_ContractKindId",
-                        column: x => x.ContractKindId,
-                        principalTable: "ContractKinds",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,12 +82,67 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BillSideToBillPoints",
+                columns: table => new
+                {
+                    EnergyLinkObjectId = table.Column<int>(type: "int", nullable: false),
+                    BillPointId = table.Column<int>(type: "int", nullable: false),
+                    SDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TypeSide = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BillSideToBillPoints", x => new { x.EnergyLinkObjectId, x.BillPointId, x.SDate });
+                    table.ForeignKey(
+                        name: "FK_BillSideToBillPoints_BillPoints_BillPointId",
+                        column: x => x.BillPointId,
+                        principalTable: "BillPoints",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BillSideToBillPoints_EnergyLinkObjects_EnergyLinkObjectId",
+                        column: x => x.EnergyLinkObjectId,
+                        principalTable: "EnergyLinkObjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EnergyLinkObjectToBillPoint",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EnergyLinkObjectId = table.Column<int>(type: "int", nullable: false),
+                    BillPointId = table.Column<int>(type: "int", nullable: false),
+                    SDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EnergyLinkObjectToBillPoint", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EnergyLinkObjectToBillPoint_BillPoints_BillPointId",
+                        column: x => x.BillPointId,
+                        principalTable: "BillPoints",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EnergyLinkObjectToBillPoint_EnergyLinkObjects_EnergyLinkObjectId",
+                        column: x => x.EnergyLinkObjectId,
+                        principalTable: "EnergyLinkObjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ContractParticipants",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ParticipantTypeId = table.Column<int>(type: "int", nullable: true),
+                    ParticipantType = table.Column<int>(type: "int", nullable: false),
                     OrganizationId = table.Column<int>(type: "int", nullable: true),
                     ContractId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -122,12 +159,6 @@ namespace Infrastructure.Migrations
                         name: "FK_ContractParticipants_Organizations_OrganizationId",
                         column: x => x.OrganizationId,
                         principalTable: "Organizations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ContractParticipants_ParticipantTypes_ParticipantTypeId",
-                        column: x => x.ParticipantTypeId,
-                        principalTable: "ParticipantTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -158,34 +189,45 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "BillParams",
+                columns: table => new
+                {
+                    EnergyLinkObjectToBillPointId = table.Column<int>(type: "int", nullable: false),
+                    BillParamType = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BillParams", x => new { x.EnergyLinkObjectToBillPointId, x.BillParamType });
+                    table.ForeignKey(
+                        name: "FK_BillParams_EnergyLinkObjectToBillPoint_EnergyLinkObjectToBillPointId",
+                        column: x => x.EnergyLinkObjectToBillPointId,
+                        principalTable: "EnergyLinkObjectToBillPoint",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
-                table: "ContractKinds",
-                columns: new[] { "Id", "Name" },
+                table: "BillPoints",
+                columns: new[] { "Id", "Name", "TnePointId" },
                 values: new object[,]
                 {
-                    { 1, "Договор энергоснабжения" },
-                    { 2, "Договор купили-продажи" }
+                    { 1, "bp1", 1 },
+                    { 2, "bp1", 2 },
+                    { 3, "bp1", 3 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Organizations",
-                columns: new[] { "Id", "Name" },
+                columns: new[] { "Id", "Name", "OrganizationType" },
                 values: new object[,]
                 {
-                    { 1, "ТНЭ" },
-                    { 2, "КТК" },
-                    { 3, "Дружба" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "ParticipantTypes",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Продавец электроэнергии" },
-                    { 2, "Покупатель электроэнергии" },
-                    { 3, "Население" },
-                    { 4, "Организация оказывающая услуги населению" }
+                    { 1, "ТНЭ", 1 },
+                    { 2, "КТК", 4 },
+                    { 3, "Дружба", 4 },
+                    { 4, "Рога и копыта", 0 },
+                    { 5, "Башкирэнерго", 3 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -199,6 +241,11 @@ namespace Infrastructure.Migrations
                 column: "EnergyLinkObjectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BillSideToBillPoints_BillPointId",
+                table: "BillSideToBillPoints",
+                column: "BillPointId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ContractParticipants_ContractId",
                 table: "ContractParticipants",
                 column: "ContractId");
@@ -209,14 +256,14 @@ namespace Infrastructure.Migrations
                 column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContractParticipants_ParticipantTypeId",
-                table: "ContractParticipants",
-                column: "ParticipantTypeId");
+                name: "IX_EnergyLinkObjectToBillPoint_BillPointId",
+                table: "EnergyLinkObjectToBillPoint",
+                column: "BillPointId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contracts_ContractKindId",
-                table: "Contracts",
-                column: "ContractKindId");
+                name: "IX_EnergyLinkObjectToBillPoint_EnergyLinkObjectId",
+                table: "EnergyLinkObjectToBillPoint",
+                column: "EnergyLinkObjectId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -225,25 +272,31 @@ namespace Infrastructure.Migrations
                 name: "BillObjectToEnergyLinkObjects");
 
             migrationBuilder.DropTable(
+                name: "BillParams");
+
+            migrationBuilder.DropTable(
+                name: "BillSideToBillPoints");
+
+            migrationBuilder.DropTable(
                 name: "ContractParticipants");
 
             migrationBuilder.DropTable(
                 name: "BillObjects");
 
             migrationBuilder.DropTable(
-                name: "EnergyLinkObjects");
+                name: "EnergyLinkObjectToBillPoint");
 
             migrationBuilder.DropTable(
                 name: "Organizations");
 
             migrationBuilder.DropTable(
-                name: "ParticipantTypes");
-
-            migrationBuilder.DropTable(
                 name: "Contracts");
 
             migrationBuilder.DropTable(
-                name: "ContractKinds");
+                name: "BillPoints");
+
+            migrationBuilder.DropTable(
+                name: "EnergyLinkObjects");
         }
     }
 }
