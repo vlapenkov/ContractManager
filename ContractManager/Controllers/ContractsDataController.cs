@@ -37,7 +37,7 @@ namespace ContractManager.Controllers
 
             var result = new ContractDto
             {
-
+                SubContracts = contract.SubContracts.Select(sc=>new SubContractDto {Id = sc.Id, Name=sc.DocumentNumber, SDate=sc.SignDate }).ToList(),
                 Side1 = contract.ContractParticipants.Where(cp => cp.ParticipantType == Domain.Enums.ParticipantType.Supplier).FirstOrDefault()?.Organization?.Name,
                 Side2 = contract.ContractParticipants.Where(cp => cp.ParticipantType == Domain.Enums.ParticipantType.Customer).FirstOrDefault()?.Organization?.Name,
                 BillObjects = contract.BillObjects.Select(bo => new BillObjectDto

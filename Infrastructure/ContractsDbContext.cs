@@ -51,14 +51,21 @@ namespace Infrastructure
 
             //modelBuilder.Entity<RfSubject>().Property(bp => bp.Id).ValueGeneratedNever();
 
-            modelBuilder.Entity<Contract>().Property(bp => bp.ContractKind).IsRequired();
-            modelBuilder.Entity<Contract>().Property(bp => bp.DocumentNumber).IsRequired();
-
-
+            // договор с доп. соглашениями
             modelBuilder.Entity<ContractDocument>()
               .HasDiscriminator<int>("ContractType")
                 .HasValue<Contract>(1)
                 .HasValue<SubContract>(2);
+
+            modelBuilder.Entity<Contract>().Property(bp => bp.ContractKind).IsRequired();
+            modelBuilder.Entity<Contract>().Property(bp => bp.DocumentNumber).IsRequired();
+
+             modelBuilder.Entity<Contract>(entity => entity.HasMany(p => p.SubContracts)
+             .WithOne(sub=>sub.Contract).HasForeignKey(sub=>sub.ContractDocumentId).OnDelete(DeleteBehavior.Restrict));
+
+            
+
+            // другие сущности
 
 
             modelBuilder.Entity<RfSubject>(entity => { 

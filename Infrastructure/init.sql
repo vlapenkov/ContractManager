@@ -31,7 +31,9 @@ CREATE TABLE [ContractDocument] (
     [EActionDate] datetime2 NULL,
     [ContractType] int NOT NULL,
     [ContractKind] int NULL,
-    CONSTRAINT [PK_ContractDocument] PRIMARY KEY ([Id])
+    [ContractDocumentId] int NULL,
+    CONSTRAINT [PK_ContractDocument] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_ContractDocument_ContractDocument_ContractDocumentId] FOREIGN KEY ([ContractDocumentId]) REFERENCES [ContractDocument] ([Id]) ON DELETE CASCADE
 );
 GO
 
@@ -168,6 +170,9 @@ GO
 CREATE INDEX [IX_BillSideToBillPoints_BillPointId] ON [BillSideToBillPoints] ([BillPointId]);
 GO
 
+CREATE INDEX [IX_ContractDocument_ContractDocumentId] ON [ContractDocument] ([ContractDocumentId]);
+GO
+
 CREATE INDEX [IX_ContractParticipants_ContractId] ON [ContractParticipants] ([ContractId]);
 GO
 
@@ -181,7 +186,7 @@ CREATE INDEX [IX_EnergyLinkObjectToBillPoint_EnergyLinkObjectId] ON [EnergyLinkO
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20210318060859_init', N'5.0.2');
+VALUES (N'20210318064244_init', N'5.0.2');
 GO
 
 COMMIT;

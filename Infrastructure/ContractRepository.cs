@@ -22,7 +22,8 @@ namespace Infrastructure
         {
 
             var result = _db.Contracts
-               //.Include(contract => contract.ContractKind)
+                .Include(contract => contract.SubContracts)
+                //.Include(contract => contract.ContractKind)
                 .Include(contract => contract.ContractParticipants)
                    // .ThenInclude(cp => cp.ParticipantType)
                 .Include(cp => cp.ContractParticipants)

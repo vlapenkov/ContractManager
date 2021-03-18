@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Enums;
+using Domain.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -51,6 +52,15 @@ namespace ContractManager.Controllers
             List<ContractParticipant> participants = new List<ContractParticipant> { cp1, cp2 };
             var contract = new Contract("1",DateTime.Now.Date, DateTime.Now.Date, ContractKind.EnergySupply,  participants);
             _db.Contracts.Add(contract);
+            _db.SaveChanges();
+
+        }
+
+        [HttpPost("addsubcontract/{contractId}")]
+        public void Post(int contractId)
+        {
+           var subContract= new SubContract(1, "1", DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));            
+            _db.SubContracts.Add(subContract);
             _db.SaveChanges();
 
         }

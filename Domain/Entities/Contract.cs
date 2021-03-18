@@ -16,7 +16,9 @@ namespace Domain
         public virtual ICollection<BillObject> BillObjects { get; private set; } = new List<BillObject>();
         public virtual ICollection<ContractParticipant> ContractParticipants { get; private set; } = new List<ContractParticipant>();
 
-        
+        public virtual ICollection<SubContract> SubContracts { get; private set; } = new List<SubContract>();
+
+
         private Contract() { }
         public Contract(string documentNumber, DateTime signDate, DateTime sActionDate, ContractKind contractKind, List<ContractParticipant> contractParticipants)
             :base(documentNumber, signDate, sActionDate)
