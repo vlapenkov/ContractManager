@@ -20,12 +20,14 @@ namespace Infrastructure
         }
 
         //public DbSet<ContractKind> ContractKinds { get; set; }        
-        public DbSet<Contract> Contracts { get; set; }        
+        public DbSet<Contract> Contracts { get; set; }
+        public DbSet<SubContract> SubContracts { get; set; }
         public DbSet<ContractParticipant> ContractParticipants { get; set; }
           
         public DbSet<Organization> Organizations { get; set; }
 
         public DbSet<BillObject> BillObjects { get; set; }
+        public DbSet<RfSubject> RfSubjects { get; set; }
         public DbSet<EnergyLinkObject> EnergyLinkObjects { get; set; }
         public DbSet<BillObjectToEnergyLinkObject> BillObjectToEnergyLinkObjects { get; set; }
 
@@ -45,9 +47,29 @@ namespace Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //base.OnModelCreating(modelBuilder);
-           // modelBuilder.Entity<Contract>(entity => entity.HasOne(p => p.ContractKind).WithMany());
+            // modelBuilder.Entity<Contract>(entity => entity.HasOne(p => p.ContractKind).WithMany());
 
-           // modelBuilder.Entity<ContractParticipant>(entity => entity.HasOne(p => p.ParticipantType).WithMany());
+            //modelBuilder.Entity<RfSubject>().Property(bp => bp.Id).ValueGeneratedNever();
+
+            modelBuilder.Entity<Contract>().Property(bp => bp.ContractKind).IsRequired();
+            modelBuilder.Entity<Contract>().Property(bp => bp.DocumentNumber).IsRequired();
+
+
+            modelBuilder.Entity<ContractDocument>()
+              .HasDiscriminator<int>("ContractType")
+                .HasValue<Contract>(1)
+                .HasValue<SubContract>(2);
+
+
+            modelBuilder.Entity<RfSubject>(entity => { 
+                entity.Property(rf => rf.Name).HasMaxLength(255);
+                entity.Property(rf => rf.Code).HasMaxLength(50);
+            
+            });
+            modelBuilder.Entity<BillObject>(entity => entity.HasOne(p => p.RfSubject)
+            .WithMany().HasForeignKey(p=>p.RfSubjectId).IsRequired());
+
+            // modelBuilder.Entity<ContractParticipant>(entity => entity.HasOne(p => p.ParticipantType).WithMany());
 
             modelBuilder.Entity<ContractParticipant>(entity => entity.HasOne(p => p.Organization).WithMany());
 
@@ -115,7 +137,15 @@ namespace Infrastructure
                 new BillPoint (3,"bp1",3),
               }
               );
-           
+
+            modelBuilder.Entity<RfSubject>().HasData(
+            new RfSubject[] {
+                new RfSubject (1,"Астраханская область","12"),
+                new RfSubject (2,"Ставропольский край","07"),
+                new RfSubject (3,"Краснодарский край","03"),
+            }
+            );
+
         }
 
 

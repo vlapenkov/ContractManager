@@ -49,7 +49,7 @@ namespace ContractManager.Controllers
             var cp2 = new ContractParticipant(ParticipantType.Customer, org2);
 
             List<ContractParticipant> participants = new List<ContractParticipant> { cp1, cp2 };
-            var contract = new Contract(DateTime.Now, ContractKind.EnergySupply,  participants);
+            var contract = new Contract("1",DateTime.Now.Date, DateTime.Now.Date, ContractKind.EnergySupply,  participants);
             _db.Contracts.Add(contract);
             _db.SaveChanges();
 
@@ -62,8 +62,8 @@ namespace ContractManager.Controllers
         [HttpPut("createbo/{contractId}")]
         public async Task Put( int contractId )
         {
-
-            var bo = new BillObject(DateTime.Now.ToString());
+            var rf1 =_db.RfSubjects.Find(1);
+            var bo = new BillObject(DateTime.Now.ToString(), rf1);
             _db.BillObjects.Add(bo);
 
             var contract = _db.Contracts
