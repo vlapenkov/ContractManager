@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    [Migration("20210319092334_init")]
+    [Migration("20210319095106_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -185,6 +185,36 @@ namespace Infrastructure.Migrations
                     b.HasIndex("EnergyLinkObjectId");
 
                     b.ToTable("EnergyLinkObjectToBillPoint");
+                });
+
+            modelBuilder.Entity("Domain.Entities.BillPointRule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<int>("ContractKind")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ContractType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int>("EntrySign")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrganizationTypeSide1")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrganizationTypeSide2")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BillPointRules");
                 });
 
             modelBuilder.Entity("Domain.Entities.BillSideToBillPoint", b =>

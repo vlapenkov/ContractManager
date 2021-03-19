@@ -37,6 +37,8 @@ namespace Infrastructure
 
         public DbSet<BillParam> BillParams { get; set; }
 
+        public DbSet<BillPointRule> BillPointRules { get; set; }
+
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

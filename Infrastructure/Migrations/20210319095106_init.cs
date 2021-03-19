@@ -9,6 +9,24 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "BillPointRules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    ContractType = table.Column<int>(type: "integer", nullable: false),
+                    ContractKind = table.Column<int>(type: "integer", nullable: false),
+                    OrganizationTypeSide1 = table.Column<int>(type: "integer", nullable: false),
+                    OrganizationTypeSide2 = table.Column<int>(type: "integer", nullable: false),
+                    EntrySign = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BillPointRules", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BillPoints",
                 columns: table => new
                 {
@@ -327,6 +345,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "BillParams");
+
+            migrationBuilder.DropTable(
+                name: "BillPointRules");
 
             migrationBuilder.DropTable(
                 name: "BillSideToBillPoints");
