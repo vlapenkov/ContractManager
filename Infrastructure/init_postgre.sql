@@ -23,7 +23,7 @@ CREATE TABLE "ContractDocument" (
     "SignDate" timestamp without time zone NOT NULL,
     "SActionDate" timestamp without time zone NOT NULL,
     "EActionDate" timestamp without time zone NULL,
-    "ContractType" integer NOT NULL,
+    "DocumentType" integer NOT NULL,
     "ContractKind" integer NULL,
     "ContractDocumentId" integer NULL,
     CONSTRAINT "PK_ContractDocument" PRIMARY KEY ("Id"),
@@ -155,7 +155,7 @@ CREATE INDEX "IX_EnergyLinkObjectToBillPoint_BillPointId" ON "EnergyLinkObjectTo
 CREATE INDEX "IX_EnergyLinkObjectToBillPoint_EnergyLinkObjectId" ON "EnergyLinkObjectToBillPoint" ("EnergyLinkObjectId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20210319085334_init', '5.0.2');
+VALUES ('20210319092334_init', '5.0.2');
 
 COMMIT;
 

@@ -81,7 +81,7 @@ namespace ContractManager.Controllers
                 .FirstOrDefault(x => x.Id == contractId);
 
             contract.AddBillObject(bo);
-            await _db.SaveEntitiesAsync();
+            await _db.SaveChangesAsync();
         }
 
 

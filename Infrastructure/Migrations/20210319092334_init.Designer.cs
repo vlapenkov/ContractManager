@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    [Migration("20210319085334_init")]
+    [Migration("20210319092334_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -218,9 +218,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<int>("ContractType")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -230,6 +227,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("DocumentNumber")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("DocumentType")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("EActionDate")
                         .HasColumnType("timestamp without time zone");
@@ -244,7 +244,7 @@ namespace Infrastructure.Migrations
 
                     b.ToTable("ContractDocument");
 
-                    b.HasDiscriminator<int>("ContractType");
+                    b.HasDiscriminator<int>("DocumentType");
                 });
 
             modelBuilder.Entity("Domain.Entities.RfSubject", b =>

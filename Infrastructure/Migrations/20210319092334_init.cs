@@ -33,7 +33,7 @@ namespace Infrastructure.Migrations
                     SignDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     SActionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EActionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    ContractType = table.Column<int>(type: "integer", nullable: false),
+                    DocumentType = table.Column<int>(type: "integer", nullable: false),
                     ContractKind = table.Column<int>(type: "integer", nullable: true),
                     ContractDocumentId = table.Column<int>(type: "integer", nullable: true)
                 },
