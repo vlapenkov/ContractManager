@@ -41,7 +41,8 @@ namespace Infrastructure
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=contract-manager;Trusted_Connection=True;MultipleActiveResultSets=true");
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=contract-manager;Trusted_Connection=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseNpgsql("Host=localhost;Database=contract-manager;Username=TNE_USER;Password=123123");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,7 +50,9 @@ namespace Infrastructure
             //base.OnModelCreating(modelBuilder);
             // modelBuilder.Entity<Contract>(entity => entity.HasOne(p => p.ContractKind).WithMany());
 
-            //modelBuilder.Entity<RfSubject>().Property(bp => bp.Id).ValueGeneratedNever();
+            modelBuilder.Entity<RfSubject>().Property(bp => bp.Id).ValueGeneratedNever();
+            modelBuilder.Entity<Organization>().Property(bp => bp.Id).ValueGeneratedNever();
+            modelBuilder.Entity<BillPoint>().Property(bp => bp.Id).ValueGeneratedNever();
 
             // договор с доп. соглашениями
             modelBuilder.Entity<ContractDocument>()
@@ -147,9 +150,9 @@ namespace Infrastructure
 
             modelBuilder.Entity<RfSubject>().HasData(
             new RfSubject[] {
-                new RfSubject (1,"Астраханская область","12"),
-                new RfSubject (2,"Ставропольский край","07"),
-                new RfSubject (3,"Краснодарский край","03"),
+                new RfSubject (1,"Астраханская область","30","12"),
+                new RfSubject (2,"Ставропольский край","26","07"),
+                new RfSubject (3,"Краснодарский край","23","03"),
             }
             );
 

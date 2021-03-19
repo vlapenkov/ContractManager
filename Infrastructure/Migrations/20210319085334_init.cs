@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Infrastructure.Migrations
 {
@@ -11,9 +12,9 @@ namespace Infrastructure.Migrations
                 name: "BillPoints",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TnePointId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    TnePointId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -24,17 +25,17 @@ namespace Infrastructure.Migrations
                 name: "ContractDocument",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DocumentNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SignDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SActionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EActionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ContractType = table.Column<int>(type: "int", nullable: false),
-                    ContractKind = table.Column<int>(type: "int", nullable: true),
-                    ContractDocumentId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    DocumentNumber = table.Column<string>(type: "text", nullable: false),
+                    SignDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    SActionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EActionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ContractType = table.Column<int>(type: "integer", nullable: false),
+                    ContractKind = table.Column<int>(type: "integer", nullable: true),
+                    ContractDocumentId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,9 +52,9 @@ namespace Infrastructure.Migrations
                 name: "EnergyLinkObjects",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -64,10 +65,9 @@ namespace Infrastructure.Migrations
                 name: "Organizations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrganizationType = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    OrganizationType = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,10 +78,10 @@ namespace Infrastructure.Migrations
                 name: "RfSubjects",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CodeAts = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,11 +92,11 @@ namespace Infrastructure.Migrations
                 name: "BillSideToBillPoints",
                 columns: table => new
                 {
-                    EnergyLinkObjectId = table.Column<int>(type: "int", nullable: false),
-                    BillPointId = table.Column<int>(type: "int", nullable: false),
-                    SDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    TypeSide = table.Column<int>(type: "int", nullable: false)
+                    EnergyLinkObjectId = table.Column<int>(type: "integer", nullable: false),
+                    BillPointId = table.Column<int>(type: "integer", nullable: false),
+                    SDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    TypeSide = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,12 +119,12 @@ namespace Infrastructure.Migrations
                 name: "EnergyLinkObjectToBillPoint",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EnergyLinkObjectId = table.Column<int>(type: "int", nullable: false),
-                    BillPointId = table.Column<int>(type: "int", nullable: false),
-                    SDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    EnergyLinkObjectId = table.Column<int>(type: "integer", nullable: false),
+                    BillPointId = table.Column<int>(type: "integer", nullable: false),
+                    SDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -136,7 +136,7 @@ namespace Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EnergyLinkObjectToBillPoint_EnergyLinkObjects_EnergyLinkObjectId",
+                        name: "FK_EnergyLinkObjectToBillPoint_EnergyLinkObjects_EnergyLinkObj~",
                         column: x => x.EnergyLinkObjectId,
                         principalTable: "EnergyLinkObjects",
                         principalColumn: "Id",
@@ -147,11 +147,11 @@ namespace Infrastructure.Migrations
                 name: "ContractParticipants",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ParticipantType = table.Column<int>(type: "int", nullable: false),
-                    OrganizationId = table.Column<int>(type: "int", nullable: true),
-                    ContractId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ParticipantType = table.Column<int>(type: "integer", nullable: false),
+                    OrganizationId = table.Column<int>(type: "integer", nullable: true),
+                    ContractId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -174,11 +174,11 @@ namespace Infrastructure.Migrations
                 name: "BillObjects",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ContractId = table.Column<int>(type: "int", nullable: false),
-                    RfSubjectId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    ContractId = table.Column<int>(type: "integer", nullable: false),
+                    RfSubjectId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -201,15 +201,15 @@ namespace Infrastructure.Migrations
                 name: "BillParams",
                 columns: table => new
                 {
-                    EnergyLinkObjectToBillPointId = table.Column<int>(type: "int", nullable: false),
-                    BillParamType = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<int>(type: "int", nullable: false)
+                    EnergyLinkObjectToBillPointId = table.Column<int>(type: "integer", nullable: false),
+                    BillParamType = table.Column<int>(type: "integer", nullable: false),
+                    Value = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BillParams", x => new { x.EnergyLinkObjectToBillPointId, x.BillParamType });
                     table.ForeignKey(
-                        name: "FK_BillParams_EnergyLinkObjectToBillPoint_EnergyLinkObjectToBillPointId",
+                        name: "FK_BillParams_EnergyLinkObjectToBillPoint_EnergyLinkObjectToBi~",
                         column: x => x.EnergyLinkObjectToBillPointId,
                         principalTable: "EnergyLinkObjectToBillPoint",
                         principalColumn: "Id",
@@ -220,10 +220,10 @@ namespace Infrastructure.Migrations
                 name: "BillObjectToEnergyLinkObjects",
                 columns: table => new
                 {
-                    EnergyLinkObjectId = table.Column<int>(type: "int", nullable: false),
-                    BillObjectId = table.Column<int>(type: "int", nullable: false),
-                    SDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    EnergyLinkObjectId = table.Column<int>(type: "integer", nullable: false),
+                    BillObjectId = table.Column<int>(type: "integer", nullable: false),
+                    SDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -235,7 +235,7 @@ namespace Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BillObjectToEnergyLinkObjects_EnergyLinkObjects_EnergyLinkObjectId",
+                        name: "FK_BillObjectToEnergyLinkObjects_EnergyLinkObjects_EnergyLinkO~",
                         column: x => x.EnergyLinkObjectId,
                         principalTable: "EnergyLinkObjects",
                         principalColumn: "Id",
@@ -266,12 +266,12 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "RfSubjects",
-                columns: new[] { "Id", "Code", "Name" },
+                columns: new[] { "Id", "Code", "CodeAts", "Name" },
                 values: new object[,]
                 {
-                    { 1, "12", "Астраханская область" },
-                    { 2, "07", "Ставропольский край" },
-                    { 3, "03", "Краснодарский край" }
+                    { 1, "30", "12", "Астраханская область" },
+                    { 2, "26", "07", "Ставропольский край" },
+                    { 3, "23", "03", "Краснодарский край" }
                 });
 
             migrationBuilder.CreateIndex(

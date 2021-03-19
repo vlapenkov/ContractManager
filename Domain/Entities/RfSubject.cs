@@ -12,17 +12,22 @@ namespace Domain.Entities
         public string Name { get; private set; }
 
         /// <summary>
-        /// Код АТС
+        /// Код региона из классификатора
         /// </summary>
         public string Code { get; private set; }
+        /// <summary>
+        /// Код АТС
+        /// </summary>
+        public string CodeAts { get; private set; }
 
         private RfSubject() {}
-        public RfSubject(int id,string name, string code):this(name,code) {
+        public RfSubject(int id,string name, string code, string codeAts):this(name,code,codeAts) {
             this.Id = id;            
         }
-        public RfSubject(string name, string code) {
+        public RfSubject(string name, string code, string codeAts) {
             this.Name = name;
             this.Code = code;
+            this.CodeAts = codeAts;
         }
 
     }
