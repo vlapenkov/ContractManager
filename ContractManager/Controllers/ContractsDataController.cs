@@ -52,7 +52,8 @@ namespace ContractManager.Controllers
                     Name = elo.EnergyLinkObject.Name,
                     BillPoints = elo.EnergyLinkObject.EnergyLinkObjectsToBillPoints
                .Where(bo2Elo => /*true || */bo2Elo.SDate <= curDate && (bo2Elo.EDate == null || bo2Elo.EDate > curDate))
-               .Select(elo => elo.BillPointId)
+               .Select(bp => new BillPointDto {Id= bp.BillPoint.Id, Name= bp.BillPoint.Name , 
+                   BillParams = bp.BillParams.Select (bparam=>new BillParamDto {Value = bparam.Value, Id=(int)bparam.BillParamType }).ToList()})
                   .ToList()
                 }).ToList()
                 }).ToList()

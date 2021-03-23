@@ -7,6 +7,6 @@ namespace Contracts
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<int> BillPoints { get; set; }
+        public ICollection<BillPointDto> BillPoints { get; set; }
     }
 }
