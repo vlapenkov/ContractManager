@@ -15,9 +15,7 @@ namespace Domain
             Name = name;
         }
 
-        //private readonly List<BillObjectToEnergyLinkObject> _billObjectsToEnergyLinkObjects = new List<BillObjectToEnergyLinkObject>();
-        //public virtual IReadOnlyCollection<BillObjectToEnergyLinkObject> BillObjectsToEnergyLinkObjects => _billObjectsToEnergyLinkObjects;
-
+        
         public virtual ICollection<BillObjectToEnergyLinkObject> BillObjectsToEnergyLinkObjects { get; private set; } = new List<BillObjectToEnergyLinkObject>();
         public virtual ICollection<EnergyLinkObjectToBillPoint> EnergyLinkObjectsToBillPoints { get; private set; } = new List<EnergyLinkObjectToBillPoint>();
         public virtual ICollection<BillSideToBillPoint> BillSideToBillPoints { get; private set; } = new List<BillSideToBillPoint>();

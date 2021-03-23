@@ -4,13 +4,16 @@ using System.Text;
 
 namespace Domain
 {
+
+    /// <summary>
+    ///  связь ообъекта электрической связи с точкой поставки
+    /// </summary>
     public class EnergyLinkObjectToBillPoint :BaseEntity, IPeriodEntity
     {
         public BillPoint BillPoint { get; private set; }
 
         public EnergyLinkObject EnergyLinkObject { get; private set; }
-
-       // private readonly List<BillParam> _billParams = new List<BillParam>();
+    
         public virtual IList<BillParam> BillParams { get; private set; } = new List<BillParam>();
 
 

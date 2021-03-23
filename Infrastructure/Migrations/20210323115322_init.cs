@@ -14,7 +14,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: false),
                     ContractType = table.Column<int>(type: "integer", nullable: false),
                     ContractKind = table.Column<int>(type: "integer", nullable: false),
                     OrganizationTypeSide1 = table.Column<int>(type: "integer", nullable: false),
@@ -30,9 +30,10 @@ namespace Infrastructure.Migrations
                 name: "BillPoints",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    TnePointId = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Guid = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,12 +46,13 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Guid = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     DocumentNumber = table.Column<string>(type: "text", nullable: false),
-                    SignDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    SActionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    EActionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    SignDate = table.Column<DateTime>(type: "Date", nullable: false),
+                    SActionDate = table.Column<DateTime>(type: "Date", nullable: false),
+                    EActionDate = table.Column<DateTime>(type: "Date", nullable: true),
                     DocumentType = table.Column<int>(type: "integer", nullable: false),
                     ContractKind = table.Column<int>(type: "integer", nullable: true),
                     ContractDocumentId = table.Column<int>(type: "integer", nullable: true)
@@ -83,23 +85,36 @@ namespace Infrastructure.Migrations
                 name: "Organizations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    OrganizationType = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ShortName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    LongName = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
+                    AcsId = table.Column<int>(type: "integer", nullable: true),
+                    OrganizationType = table.Column<int>(type: "integer", nullable: false),
+                    ParentOrganizationId = table.Column<int>(type: "integer", nullable: true),
+                    Guid = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Organizations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Organizations_Organizations_ParentOrganizationId",
+                        column: x => x.ParentOrganizationId,
+                        principalTable: "Organizations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "RfSubjects",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
-                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    CodeAts = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    CodeAts = table.Column<string>(type: "text", nullable: false),
+                    Guid = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -112,8 +127,8 @@ namespace Infrastructure.Migrations
                 {
                     EnergyLinkObjectId = table.Column<int>(type: "integer", nullable: false),
                     BillPointId = table.Column<int>(type: "integer", nullable: false),
-                    SDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    EDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    SDate = table.Column<DateTime>(type: "Date", nullable: false),
+                    EDate = table.Column<DateTime>(type: "Date", nullable: true),
                     TypeSide = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -141,8 +156,8 @@ namespace Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     EnergyLinkObjectId = table.Column<int>(type: "integer", nullable: false),
                     BillPointId = table.Column<int>(type: "integer", nullable: false),
-                    SDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    EDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    SDate = table.Column<DateTime>(type: "Date", nullable: false),
+                    EDate = table.Column<DateTime>(type: "Date", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -194,9 +209,10 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     ContractId = table.Column<int>(type: "integer", nullable: false),
-                    RfSubjectId = table.Column<int>(type: "integer", nullable: false)
+                    RfSubjectId = table.Column<int>(type: "integer", nullable: false),
+                    Guid = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -240,8 +256,8 @@ namespace Infrastructure.Migrations
                 {
                     EnergyLinkObjectId = table.Column<int>(type: "integer", nullable: false),
                     BillObjectId = table.Column<int>(type: "integer", nullable: false),
-                    SDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    EDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    SDate = table.Column<DateTime>(type: "Date", nullable: false),
+                    EDate = table.Column<DateTime>(type: "Date", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -262,40 +278,46 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "BillPoints",
-                columns: new[] { "Id", "Name", "TnePointId" },
+                columns: new[] { "Id", "Guid", "Name" },
                 values: new object[,]
                 {
-                    { 1, "bp1", 1 },
-                    { 2, "bp1", 2 },
-                    { 3, "bp1", 3 }
+                    { 1, new Guid("b8d40d2b-b9f2-463f-a3e8-467dcfbb48ea"), "bp1" },
+                    { 2, new Guid("2ee047a6-d87c-44b7-9e0e-f89bd526b1c3"), "bp2" },
+                    { 3, new Guid("235f7a97-ac8d-47c9-bead-528ff21a005f"), "bp3" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Organizations",
-                columns: new[] { "Id", "Name", "OrganizationType" },
+                columns: new[] { "Id", "AcsId", "Guid", "LongName", "OrganizationType", "ParentOrganizationId", "ShortName" },
                 values: new object[,]
                 {
-                    { 1, "ТНЭ", 1 },
-                    { 2, "КТК", 4 },
-                    { 3, "Дружба", 4 },
-                    { 4, "Рога и копыта", 0 },
-                    { 5, "Башкирэнерго", 3 }
+                    { 1, null, new Guid("1b55b6f5-0e97-4764-8b33-65b80860b63f"), "ТНЭ", 1, null, "ТНЭ" },
+                    { 2, null, new Guid("f891250d-0d9f-43cf-b5fd-47e8c027eeee"), "КТК", 4, null, "КТК" },
+                    { 3, null, new Guid("85f9fbb7-e680-46b6-8c91-ce2c35dd4193"), "Дружба", 4, null, "Дружба" },
+                    { 4, null, new Guid("043210b2-d3a0-4fc2-b505-735558c48a07"), "Рога и копыта", 0, null, "Рога и копыта" },
+                    { 5, null, new Guid("f97736b3-fc4d-466c-8c93-22c4c020a5fc"), "Башкирэнерго", 3, null, "Башкирэнерго" }
                 });
 
             migrationBuilder.InsertData(
                 table: "RfSubjects",
-                columns: new[] { "Id", "Code", "CodeAts", "Name" },
+                columns: new[] { "Id", "Code", "CodeAts", "Guid", "Name" },
                 values: new object[,]
                 {
-                    { 1, "30", "12", "Астраханская область" },
-                    { 2, "26", "07", "Ставропольский край" },
-                    { 3, "23", "03", "Краснодарский край" }
+                    { 1, "30", "12", new Guid("d8162092-2702-4ae3-a4f3-fbd1a85b6069"), "Астраханская область" },
+                    { 2, "26", "07", new Guid("99b12c1a-5df8-4f13-96b9-1a46f74ac7bc"), "Ставропольский край" },
+                    { 3, "23", "03", new Guid("8164c992-8c0b-42cb-bbb7-3b46461146cc"), "Краснодарский край" }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_BillObjects_ContractId",
                 table: "BillObjects",
                 column: "ContractId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BillObjects_Guid",
+                table: "BillObjects",
+                column: "Guid",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_BillObjects_RfSubjectId",
@@ -308,6 +330,12 @@ namespace Infrastructure.Migrations
                 column: "EnergyLinkObjectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BillPoints_Guid",
+                table: "BillPoints",
+                column: "Guid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BillSideToBillPoints_BillPointId",
                 table: "BillSideToBillPoints",
                 column: "BillPointId");
@@ -316,6 +344,12 @@ namespace Infrastructure.Migrations
                 name: "IX_ContractDocument_ContractDocumentId",
                 table: "ContractDocument",
                 column: "ContractDocumentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContractDocument_Guid",
+                table: "ContractDocument",
+                column: "Guid",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ContractParticipants_ContractId",
@@ -336,6 +370,23 @@ namespace Infrastructure.Migrations
                 name: "IX_EnergyLinkObjectToBillPoint_EnergyLinkObjectId",
                 table: "EnergyLinkObjectToBillPoint",
                 column: "EnergyLinkObjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Organizations_Guid",
+                table: "Organizations",
+                column: "Guid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Organizations_ParentOrganizationId",
+                table: "Organizations",
+                column: "ParentOrganizationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RfSubjects_Guid",
+                table: "RfSubjects",
+                column: "Guid",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

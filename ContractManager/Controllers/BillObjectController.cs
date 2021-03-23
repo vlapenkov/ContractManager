@@ -145,7 +145,7 @@ namespace ContractManager.Controllers
             if (billpointFound == null)
             eloFound.AddBillPoint(numberOfBillPoint, DateTime.Now.Date.AddDays(-1));            
             
-            eloFound.AddParameter(numberOfBillPoint, BillParamType.VoltageTarifLevel, 30);
+            eloFound.AddParameter(numberOfBillPoint, BillParamType.PriceCategory, 3);
 
 
 

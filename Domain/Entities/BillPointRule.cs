@@ -1,6 +1,7 @@
 ﻿using Domain.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Domain.Entities
@@ -10,6 +11,7 @@ namespace Domain.Entities
     /// </summary>
    public class BillPointRule :BaseEntity
     {
+        [Required]
         public string Description { get; private set; }
 
         /// <summary>
@@ -32,6 +34,9 @@ namespace Domain.Entities
         /// </summary>
         public OrganizationTypeEnum OrganizationTypeSide2 { get; private set; }
 
+        /// <summary>
+        /// Знак вхождения ТП в договор
+        /// </summary>
         public Sign EntrySign { get; private set; }
 
         private BillPointRule() { }

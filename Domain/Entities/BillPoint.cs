@@ -5,23 +5,30 @@ using System.Text;
 
 namespace Domain
 {
-    public class BillPoint:BaseEntity
+    public class BillPoint:BaseEntity , IGlobalEntity
     {
         private BillPoint() { }
+
+        
         public string Name { get; private set; }
+        public Guid Guid { get; private set; }
 
-        public int  TnePointId { get; private set; }
-
-        public BillPoint(int id, string name, int tneId)
+        public BillPoint(Guid guid,  string name)
         {
-            Id = id;
-            Name = name;
-            TnePointId = tneId;
+            Guid = guid;
+            Name = name;            
         }
 
-        //private readonly List<EnergyLinkObjectToBillPoint> _energyLinkObjectsToBillPoints = new List<EnergyLinkObjectToBillPoint>();
-        public virtual IReadOnlyCollection<EnergyLinkObjectToBillPoint> EnergyLinkObjectsToBillPoints { get; set; }  = new List<EnergyLinkObjectToBillPoint>();
+        public BillPoint(int id, Guid guid, string name): this(guid, name)
+        {
+            Id = id;
+        }
 
-        public virtual IReadOnlyCollection<BillSideToBillPoint> BillSideToBillPoints { get; set; } = new List<BillSideToBillPoint>();
+        
+        public virtual IReadOnlyCollection<EnergyLinkObjectToBillPoint> EnergyLinkObjectsToBillPoints { get; private set; }  = new HashSet<EnergyLinkObjectToBillPoint>();
+
+        public virtual IReadOnlyCollection<BillSideToBillPoint> BillSideToBillPoints { get; private set; } = new HashSet<BillSideToBillPoint>();
+
+        
     }
 }

@@ -10,13 +10,15 @@ namespace Domain
     public class Contract : ContractDocument
     {
         public ContractKind ContractKind { get; private set; } = ContractKind.EnergySupply;
-        
-        // public DateTime ContractName { get; private set; }
 
-        public virtual ICollection<BillObject> BillObjects { get; private set; } = new List<BillObject>();
-        public virtual ICollection<ContractParticipant> ContractParticipants { get; private set; } = new List<ContractParticipant>();
+        // todo: реализовать наименование договора и тип договора
+         public string ContractName { get;  }
+         public ContractType ContractType { get;}
 
-        public virtual ICollection<SubContract> SubContracts { get; private set; } = new List<SubContract>();
+        public virtual ICollection<BillObject> BillObjects { get; private set; } = new HashSet<BillObject>();
+        public virtual ICollection<ContractParticipant> ContractParticipants { get; private set; } = new HashSet<ContractParticipant>();
+
+        public virtual ICollection<SubContract> SubContracts { get; private set; } = new HashSet<SubContract>();
 
 
         private Contract() { }
@@ -36,8 +38,7 @@ namespace Domain
                 throw new ArgumentException("Cannot add duplicate appointment to schedule.", "appointment");
             }
             BillObjects.Add(billObject);
-            AddDomainEvent(new BillObjectAddedEvent(billObject,this));
-
+          
             return billObject;
         }
 

@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.Entities;
+using Domain.Enums;
 using Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,16 +22,18 @@ namespace ContractManager.Controllers
             _db = db;
         }
 
-        [HttpPost]
-        public void Post()
+        
+        [HttpGet("GetValue")]
+        public IActionResult GetValue(TypeSide val)
         {
-           // var fe =_db.FakeEntities.Find(1);
-         //   _db.FakeEntityLinks.Add(new FakeEntityLink(fe, BillParamTypeEnum2.VoltageTarifLevel));
+            return Ok(val);
 
-            _db.SaveChanges();
+        }
 
-
-            
+        [HttpGet("GetValues")]
+        public IActionResult GetValues()
+        {            
+            return Ok(Enum.GetValues(typeof(TypeSide)));
 
         }
     }

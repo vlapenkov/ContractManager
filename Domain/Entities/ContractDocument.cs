@@ -4,11 +4,16 @@ using System.Text;
 
 namespace Domain.Entities
 {
-   public abstract class ContractDocument: BaseEntity
+    /// <summary>
+    /// Базовый класс для документов
+    /// </summary>
+   public abstract class ContractDocument: BaseEntity, IGlobalEntity
     {
+        public Guid Guid { get; protected set; }
         protected ContractDocument() { }
         public ContractDocument(string documentNumber, DateTime signDate, DateTime sActionDate)
         {
+            this.Guid = Guid.NewGuid();
             this.DocumentNumber = documentNumber;
             this.SignDate = signDate;
             this.SActionDate = sActionDate;

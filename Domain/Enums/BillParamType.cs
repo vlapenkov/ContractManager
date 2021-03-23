@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Domain.Entities
@@ -9,9 +10,16 @@ namespace Domain.Entities
    /// </summary>
     public enum BillParamType
     {
+        [Description("Ценовая категория")]
         PriceCategory=1,
+
+        [Description("Тарифный уровень напряжения")]
         VoltageTarifLevel,
+
+        [Description("Знак вхождения")]
         Sign,
+
+        [Description("Категория мощности")]
         VolumeCategory
     }
 }

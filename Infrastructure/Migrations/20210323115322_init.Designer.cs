@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    [Migration("20210319095106_init")]
+    [Migration("20210323115322_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,11 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ContractId")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("RfSubjectId")
@@ -40,6 +44,9 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ContractId");
+
+                    b.HasIndex("Guid")
+                        .IsUnique();
 
                     b.HasIndex("RfSubjectId");
 
@@ -55,10 +62,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("SDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("Date");
 
                     b.Property<DateTime?>("EDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("Date");
 
                     b.HasKey("BillObjectId", "EnergyLinkObjectId", "SDate");
 
@@ -86,15 +93,21 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.BillPoint", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<int>("TnePointId")
-                        .HasColumnType("integer");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Guid")
+                        .IsUnique();
 
                     b.ToTable("BillPoints");
 
@@ -102,20 +115,20 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "bp1",
-                            TnePointId = 1
+                            Guid = new Guid("b8d40d2b-b9f2-463f-a3e8-467dcfbb48ea"),
+                            Name = "bp1"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "bp1",
-                            TnePointId = 2
+                            Guid = new Guid("2ee047a6-d87c-44b7-9e0e-f89bd526b1c3"),
+                            Name = "bp2"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "bp1",
-                            TnePointId = 3
+                            Guid = new Guid("235f7a97-ac8d-47c9-bead-528ff21a005f"),
+                            Name = "bp3"
                         });
                 });
 
@@ -170,13 +183,13 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("EDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("Date");
 
                     b.Property<int>("EnergyLinkObjectId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("SDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("Date");
 
                     b.HasKey("Id");
 
@@ -201,6 +214,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("EntrySign")
@@ -226,10 +240,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("SDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("Date");
 
                     b.Property<DateTime?>("EDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("Date");
 
                     b.Property<int>("TypeSide")
                         .HasColumnType("integer");
@@ -262,15 +276,21 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("EActionDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("Date");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("SActionDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("Date");
 
                     b.Property<DateTime>("SignDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("Date");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Guid")
+                        .IsUnique();
 
                     b.ToTable("ContractDocument");
 
@@ -280,20 +300,31 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.RfSubject", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .UseIdentityByDefaultColumn();
 
                     b.Property<string>("Code")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
                     b.Property<string>("CodeAts")
+                        .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Guid")
+                        .IsUnique();
 
                     b.ToTable("RfSubjects");
 
@@ -303,6 +334,7 @@ namespace Infrastructure.Migrations
                             Id = 1,
                             Code = "30",
                             CodeAts = "12",
+                            Guid = new Guid("d8162092-2702-4ae3-a4f3-fbd1a85b6069"),
                             Name = "Астраханская область"
                         },
                         new
@@ -310,6 +342,7 @@ namespace Infrastructure.Migrations
                             Id = 2,
                             Code = "26",
                             CodeAts = "07",
+                            Guid = new Guid("99b12c1a-5df8-4f13-96b9-1a46f74ac7bc"),
                             Name = "Ставропольский край"
                         },
                         new
@@ -317,6 +350,7 @@ namespace Infrastructure.Migrations
                             Id = 3,
                             Code = "23",
                             CodeAts = "03",
+                            Guid = new Guid("8164c992-8c0b-42cb-bbb7-3b46461146cc"),
                             Name = "Краснодарский край"
                         });
                 });
@@ -324,15 +358,38 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Organization", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<int?>("AcsId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("LongName")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
 
                     b.Property<int>("OrganizationType")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("ParentOrganizationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ShortName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Guid")
+                        .IsUnique();
+
+                    b.HasIndex("ParentOrganizationId");
 
                     b.ToTable("Organizations");
 
@@ -340,32 +397,42 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "ТНЭ",
-                            OrganizationType = 1
+                            Guid = new Guid("1b55b6f5-0e97-4764-8b33-65b80860b63f"),
+                            LongName = "ТНЭ",
+                            OrganizationType = 1,
+                            ShortName = "ТНЭ"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "КТК",
-                            OrganizationType = 4
+                            Guid = new Guid("f891250d-0d9f-43cf-b5fd-47e8c027eeee"),
+                            LongName = "КТК",
+                            OrganizationType = 4,
+                            ShortName = "КТК"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Дружба",
-                            OrganizationType = 4
+                            Guid = new Guid("85f9fbb7-e680-46b6-8c91-ce2c35dd4193"),
+                            LongName = "Дружба",
+                            OrganizationType = 4,
+                            ShortName = "Дружба"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Рога и копыта",
-                            OrganizationType = 0
+                            Guid = new Guid("043210b2-d3a0-4fc2-b505-735558c48a07"),
+                            LongName = "Рога и копыта",
+                            OrganizationType = 0,
+                            ShortName = "Рога и копыта"
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Башкирэнерго",
-                            OrganizationType = 3
+                            Guid = new Guid("f97736b3-fc4d-466c-8c93-22c4c020a5fc"),
+                            LongName = "Башкирэнерго",
+                            OrganizationType = 3,
+                            ShortName = "Башкирэнерго"
                         });
                 });
 
@@ -491,6 +558,16 @@ namespace Infrastructure.Migrations
                     b.Navigation("EnergyLinkObject");
                 });
 
+            modelBuilder.Entity("Domain.Organization", b =>
+                {
+                    b.HasOne("Domain.Organization", "ParentOrganization")
+                        .WithMany("ChildOrganizations")
+                        .HasForeignKey("ParentOrganizationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ParentOrganization");
+                });
+
             modelBuilder.Entity("Domain.Entities.SubContract", b =>
                 {
                     b.HasOne("Domain.Contract", "Contract")
@@ -526,6 +603,11 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.EnergyLinkObjectToBillPoint", b =>
                 {
                     b.Navigation("BillParams");
+                });
+
+            modelBuilder.Entity("Domain.Organization", b =>
+                {
+                    b.Navigation("ChildOrganizations");
                 });
 
             modelBuilder.Entity("Domain.Contract", b =>
