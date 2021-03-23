@@ -173,7 +173,18 @@ namespace Infrastructure
 
             });
 
-            
+
+            modelBuilder.Entity<BillPointToMeterPoint>(entity => {
+
+                entity.HasKey(c => new { c.BillPointId, c.MeterPointId, c.SDate });
+                entity.HasOne(link => link.BillPoint).WithMany()
+                .HasForeignKey(bo => bo.BillPointId);
+                entity.HasOne(link => link.MeterPoint).WithMany()
+                .HasForeignKey(bo => bo.MeterPointId);
+                entity.Property(cd => cd.SDate).HasColumnType("Date");
+                entity.Property(cd => cd.EDate).HasColumnType("Date");
+            });
+
             modelBuilder.Entity<Organization>().HasData(
                new Organization[] {
                 new Organization (1,Guid.NewGuid(),"ТНЭ","ТНЭ",OrganizationTypeEnum.SalesService),
@@ -199,6 +210,24 @@ namespace Infrastructure
                 new RfSubject (3,Guid.NewGuid(),"Краснодарский край","23","03"),
             }
             );
+
+            modelBuilder.Entity<MeterPoint>().HasData(
+           new MeterPoint[] {
+                new MeterPoint (1,Guid.NewGuid(),"ТИ-11"),
+                new MeterPoint (2,Guid.NewGuid(),"ТИ-12"),
+                new MeterPoint (3,Guid.NewGuid(),"ТИ-21"),
+                new MeterPoint (4,Guid.NewGuid(),"ТИ-31"),
+           }
+           );
+
+            modelBuilder.Entity<BillPointToMeterPoint>().HasData(
+           new BillPointToMeterPoint[] {
+                new BillPointToMeterPoint (1,1, DateTime.Now.Date,null),
+                new BillPointToMeterPoint (1,2, DateTime.Now.Date,null),
+                new BillPointToMeterPoint (2,3, DateTime.Now.Date,DateTime.Now.Date.AddDays(10)),
+                new BillPointToMeterPoint (3,4, DateTime.Now.Date.AddDays(-10),null),
+           }
+           );
 
         }
 
