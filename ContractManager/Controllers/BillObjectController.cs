@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Entities;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace ContractManager.Controllers
 {
@@ -42,8 +44,8 @@ namespace ContractManager.Controllers
         [HttpPost]
         public void Post()
         {
-           
-           var bo=  new BillObject("Новый объект расчета для договора #1");
+            var rfSubject =_db.RfSubjects.Find(1);
+           var bo=  new BillObject("Новый объект расчета для договора #1", rfSubject);
             var elo1 = new EnergyLinkObject("elo1");
             bo.AddEnergyLinkObject(elo1, DateTime.Now.Date);
             _db.BillObjects.Add(bo);
@@ -91,14 +93,15 @@ namespace ContractManager.Controllers
         }
 
 
-        [HttpPut("bo/createAll/{id}")]
-        public void Put3(int id)
+        [HttpPut("bo/createAll/{contractId}")]
+        public void Put3(int contractId)
         {
             //
-            var contract = _db.Contracts.Find(1); // Находим aggregate root
-            var bo = new BillObject("Новый объект расчета для договора #2");
+            var rfSubject = _db.RfSubjects.Find(1);
+            var contract = _db.Contracts.Find(contractId); // Находим aggregate root
+            var bo = new BillObject("Новый объект расчета для договора #1", rfSubject);
             var elo3 = new EnergyLinkObject("elo3");
-            elo3.AddBillPoint(5, DateTime.Now.Date.AddDays(-1),DateTime.Now.Date.AddDays(1));
+            elo3.AddBillPoint(1, DateTime.Now.Date.AddDays(-1),DateTime.Now.Date.AddDays(1));
             bo.AddEnergyLinkObject(elo3, DateTime.Now.Date);
             contract.AddBillObject(bo);
 
@@ -108,19 +111,19 @@ namespace ContractManager.Controllers
 
 
 
-        [HttpPut("bo/createWithBillParam/{id}")]
-        public void Put4(int id)
-        { 
-
+        [HttpPut("bo/createWithBillParam/{contractId}")]
+        public void Put4(int contractId)
+        {
+            var rfSubject = _db.RfSubjects.Find(1);
             string nameOfBillObject = "Новый объект расчета для договора #7";
 
-            var contract =_repo.GetContract(1);
+            var contract =_repo.GetContract(contractId);
 
             BillObject billobject = contract.BillObjects.FirstOrDefault(x => x.Name == nameOfBillObject);
 
             if (billobject == null)
             {
-                billobject = new BillObject(nameOfBillObject);
+                billobject = new BillObject(nameOfBillObject, rfSubject);
                 contract.AddBillObject(billobject);
             }
 
@@ -135,11 +138,51 @@ namespace ContractManager.Controllers
                 billobject.AddEnergyLinkObject(eloFound, DateTime.Now.Date);
             }
 
-            int numberOfBillPoint = 1005;
-        //    eloFound.AddBillPoint(numberOfBillPoint, DateTime.Now.Date.AddDays(-1), DateTime.Now.Date.AddDays(1));
+            int numberOfBillPoint = 3;
 
-            var param2  =_db.BillParamTypes.Find(3);
-            eloFound.AddParameter(numberOfBillPoint, param2, 30);
+            var billpointFound = eloFound.EnergyLinkObjectsToBillPoints.FirstOrDefault(p => p.BillPointId == numberOfBillPoint);            
+
+            if (billpointFound == null)
+            eloFound.AddBillPoint(numberOfBillPoint, DateTime.Now.Date.AddDays(-1));            
+            
+            eloFound.AddParameter(numberOfBillPoint, BillParamType.PriceCategory, 3);
+
+
+
+            _db.SaveChanges();
+        }
+
+        [HttpPut("bo/disablelink/{id}")]
+        public void Put5(int id)
+        {
+            var rfSubject = _db.RfSubjects.Find(1);
+            string nameOfBillObject = "Новый объект расчета для договора #7";
+
+            var contract = _repo.GetContract(1);
+
+            BillObject billobject = contract.BillObjects.FirstOrDefault(x => x.Name == nameOfBillObject);
+
+            if (billobject == null)
+            {
+                billobject = new BillObject(nameOfBillObject, rfSubject);
+                contract.AddBillObject(billobject);
+            }
+
+            string nameOfEnergyLinkObject = "elo #7";
+
+            EnergyLinkObject eloFound = billobject.BillObjectsToEnergyLinkObjects
+                 .Select(p => p.EnergyLinkObject)
+                 .FirstOrDefault(x => x.Name == nameOfEnergyLinkObject);
+            if (eloFound == null)
+            {
+                eloFound = new EnergyLinkObject(nameOfEnergyLinkObject);
+                billobject.AddEnergyLinkObject(eloFound, DateTime.Now.Date);
+            }
+
+            int numberOfBillPoint = 1006;
+                eloFound.DisableLink(numberOfBillPoint, DateTime.Now.AddDays(1));
+
+          
 
 
 

@@ -3,15 +3,17 @@ using System;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210323115322_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,19 +115,19 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Guid = new Guid("954b7565-20ff-4321-9e8c-8e890953598a"),
+                            Guid = new Guid("b8d40d2b-b9f2-463f-a3e8-467dcfbb48ea"),
                             Name = "bp1"
                         },
                         new
                         {
                             Id = 2,
-                            Guid = new Guid("ed2e5591-c148-4688-bd7c-f4250fa93165"),
+                            Guid = new Guid("2ee047a6-d87c-44b7-9e0e-f89bd526b1c3"),
                             Name = "bp2"
                         },
                         new
                         {
                             Id = 3,
-                            Guid = new Guid("96351e37-a7f4-4734-b77f-47d55f294090"),
+                            Guid = new Guid("235f7a97-ac8d-47c9-bead-528ff21a005f"),
                             Name = "bp3"
                         });
                 });
@@ -229,54 +231,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("BillPointRules");
                 });
 
-            modelBuilder.Entity("Domain.Entities.BillPointToMeterPoint", b =>
-                {
-                    b.Property<int>("BillPointId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("MeterPointId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("SDate")
-                        .HasColumnType("Date");
-
-                    b.Property<DateTime?>("EDate")
-                        .HasColumnType("Date");
-
-                    b.HasKey("BillPointId", "MeterPointId", "SDate");
-
-                    b.HasIndex("MeterPointId");
-
-                    b.ToTable("BillPointToMeterPoint");
-
-                    b.HasData(
-                        new
-                        {
-                            BillPointId = 1,
-                            MeterPointId = 1,
-                            SDate = new DateTime(2021, 3, 23, 0, 0, 0, 0, DateTimeKind.Local)
-                        },
-                        new
-                        {
-                            BillPointId = 1,
-                            MeterPointId = 2,
-                            SDate = new DateTime(2021, 3, 23, 0, 0, 0, 0, DateTimeKind.Local)
-                        },
-                        new
-                        {
-                            BillPointId = 2,
-                            MeterPointId = 3,
-                            SDate = new DateTime(2021, 3, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            EDate = new DateTime(2021, 4, 2, 0, 0, 0, 0, DateTimeKind.Local)
-                        },
-                        new
-                        {
-                            BillPointId = 3,
-                            MeterPointId = 4,
-                            SDate = new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Local)
-                        });
-                });
-
             modelBuilder.Entity("Domain.Entities.BillSideToBillPoint", b =>
                 {
                     b.Property<int>("EnergyLinkObjectId")
@@ -343,51 +297,6 @@ namespace Infrastructure.Migrations
                     b.HasDiscriminator<int>("DocumentType");
                 });
 
-            modelBuilder.Entity("Domain.Entities.MeterPoint", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MeterPoint");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Guid = new Guid("1245249a-4b74-48fd-b635-8c10f2660b55"),
-                            Name = "ТИ-11"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Guid = new Guid("f1156e79-9343-4598-95c9-57bb6e0b4dbd"),
-                            Name = "ТИ-12"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Guid = new Guid("4fe44c30-8ead-421a-8689-9c7be542b38e"),
-                            Name = "ТИ-21"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Guid = new Guid("0125044e-87d2-4e46-befe-c29ec4925608"),
-                            Name = "ТИ-31"
-                        });
-                });
-
             modelBuilder.Entity("Domain.Entities.RfSubject", b =>
                 {
                     b.Property<int>("Id")
@@ -425,7 +334,7 @@ namespace Infrastructure.Migrations
                             Id = 1,
                             Code = "30",
                             CodeAts = "12",
-                            Guid = new Guid("3644330d-dc56-4a37-a23d-a8528132a41b"),
+                            Guid = new Guid("d8162092-2702-4ae3-a4f3-fbd1a85b6069"),
                             Name = "Астраханская область"
                         },
                         new
@@ -433,7 +342,7 @@ namespace Infrastructure.Migrations
                             Id = 2,
                             Code = "26",
                             CodeAts = "07",
-                            Guid = new Guid("6dc9ea60-5b2c-4287-a65f-4f8d3ebaa144"),
+                            Guid = new Guid("99b12c1a-5df8-4f13-96b9-1a46f74ac7bc"),
                             Name = "Ставропольский край"
                         },
                         new
@@ -441,7 +350,7 @@ namespace Infrastructure.Migrations
                             Id = 3,
                             Code = "23",
                             CodeAts = "03",
-                            Guid = new Guid("9b252216-0b32-4cf9-beca-da333de98e6c"),
+                            Guid = new Guid("8164c992-8c0b-42cb-bbb7-3b46461146cc"),
                             Name = "Краснодарский край"
                         });
                 });
@@ -488,7 +397,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Guid = new Guid("76a1020f-a289-4950-858d-8cd08fbe8a27"),
+                            Guid = new Guid("1b55b6f5-0e97-4764-8b33-65b80860b63f"),
                             LongName = "ТНЭ",
                             OrganizationType = 1,
                             ShortName = "ТНЭ"
@@ -496,7 +405,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 2,
-                            Guid = new Guid("fd177c31-2e33-489c-9e94-c109e5817396"),
+                            Guid = new Guid("f891250d-0d9f-43cf-b5fd-47e8c027eeee"),
                             LongName = "КТК",
                             OrganizationType = 4,
                             ShortName = "КТК"
@@ -504,7 +413,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            Guid = new Guid("b576d00e-f058-430c-92d2-4f7bdfc78956"),
+                            Guid = new Guid("85f9fbb7-e680-46b6-8c91-ce2c35dd4193"),
                             LongName = "Дружба",
                             OrganizationType = 4,
                             ShortName = "Дружба"
@@ -512,7 +421,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            Guid = new Guid("c9e54849-c6f7-4ce8-adb1-7adfeaa2fd8d"),
+                            Guid = new Guid("043210b2-d3a0-4fc2-b505-735558c48a07"),
                             LongName = "Рога и копыта",
                             OrganizationType = 0,
                             ShortName = "Рога и копыта"
@@ -520,7 +429,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 5,
-                            Guid = new Guid("0b7e4010-f5e0-4736-aa61-007d3bf52cb1"),
+                            Guid = new Guid("f97736b3-fc4d-466c-8c93-22c4c020a5fc"),
                             LongName = "Башкирэнерго",
                             OrganizationType = 3,
                             ShortName = "Башкирэнерго"
@@ -628,25 +537,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("BillPoint");
 
                     b.Navigation("EnergyLinkObject");
-                });
-
-            modelBuilder.Entity("Domain.Entities.BillPointToMeterPoint", b =>
-                {
-                    b.HasOne("Domain.BillPoint", "BillPoint")
-                        .WithMany()
-                        .HasForeignKey("BillPointId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.MeterPoint", "MeterPoint")
-                        .WithMany()
-                        .HasForeignKey("MeterPointId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BillPoint");
-
-                    b.Navigation("MeterPoint");
                 });
 
             modelBuilder.Entity("Domain.Entities.BillSideToBillPoint", b =>

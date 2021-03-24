@@ -4,12 +4,11 @@ using System.Text;
 
 namespace Contracts
 {
-   public class BillPointDto
+   public class BillParamDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public int Value { get; set; }
 
-        public ICollection<BillParamDto> BillParams { get; set; }
-
+     //   public BillParamType BillParamType { get; set; }
     }
 }

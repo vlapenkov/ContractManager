@@ -31,7 +31,9 @@ namespace ContractManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ContractsDbContext>(
-           options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
+            //options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection"))
+            options => options.UseNpgsql(Configuration.GetConnectionString("SqlConnection"))
+           );
 
             services.AddScoped<ContractRepository>();
             

@@ -1,10 +1,12 @@
 ﻿using Domain;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain.Enums;
 
 namespace Infrastructure
 {
@@ -17,38 +19,102 @@ namespace Infrastructure
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public DbSet<ContractKind> ContractKinds { get; set; }        
-        public DbSet<Contract> Contracts { get; set; }        
+        //public DbSet<ContractKind> ContractKinds { get; set; }        
+        public DbSet<Contract> Contracts { get; set; }
+        public DbSet<SubContract> SubContracts { get; set; }
         public DbSet<ContractParticipant> ContractParticipants { get; set; }
-        public DbSet<ParticipantType> ParticipantTypes { get; set; }        
+          
         public DbSet<Organization> Organizations { get; set; }
 
         public DbSet<BillObject> BillObjects { get; set; }
+        public DbSet<RfSubject> RfSubjects { get; set; }
         public DbSet<EnergyLinkObject> EnergyLinkObjects { get; set; }
         public DbSet<BillObjectToEnergyLinkObject> BillObjectToEnergyLinkObjects { get; set; }
+
+        public DbSet<BillSideToBillPoint> BillSideToBillPoints { get; set; }
 
         public DbSet<BillPoint> BillPoints { get; set; }
 
         public DbSet<BillParam> BillParams { get; set; }
 
-        public DbSet<BillParamType> BillParamTypes { get; set; }
+        public DbSet<BillPointRule> BillPointRules { get; set; }
 
 
-        public DbSet<FakeEntity> FakeEntities { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=contract-manager;Trusted_Connection=True;MultipleActiveResultSets=true");
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=contract-manager;Trusted_Connection=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseNpgsql("Host=localhost;Database=contract-manager;Username=TNE_USER;Password=123123");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Contract>(entity => entity.HasOne(p => p.ContractKind).WithMany());
+            // modelBuilder.Entity<Contract>(entity => entity.HasOne(p => p.ContractKind).WithMany());
 
-            modelBuilder.Entity<ContractParticipant>(entity => entity.HasOne(p => p.ParticipantType).WithMany());
+            // modelBuilder.Entity<RfSubject>().Property(bp => bp.Id).ValueGeneratedNever();
+            // modelBuilder.Entity<Organization>().Property(bp => bp.Id).ValueGeneratedNever();
+            //modelBuilder.Entity<BillPoint>().Property(bp => bp.Id).ValueGeneratedNever();
+
+            // организация
+            modelBuilder.Entity<Organization>()
+                .HasOne(org => org.ParentOrganization)
+                .WithMany(org => org.ChildOrganizations)
+                .HasForeignKey(org => org.ParentOrganizationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<Organization>(entity => {
+                entity.Property(rf => rf.ShortName).HasMaxLength(255).IsRequired();
+                entity.Property(rf => rf.LongName).HasMaxLength(1024).IsRequired();
+                entity.HasIndex(rf => rf.Guid).IsUnique();
+            });
+
+
+            // договор с доп. соглашениями
+            modelBuilder.Entity<ContractDocument>(
+                entity => {
+                    entity.HasDiscriminator<int>("DocumentType")
+                      .HasValue<Contract>(1)
+                      .HasValue<SubContract>(2);
+
+                    entity.HasIndex(cd => cd.Guid).IsUnique();
+                    entity.Property(cd => cd.SignDate).HasColumnType("Date");
+                    entity.Property(cd => cd.SActionDate).HasColumnType("Date");
+                    entity.Property(cd => cd.EActionDate).HasColumnType("Date");
+                }
+            );
+                       
+
+           modelBuilder.Entity<Contract>(entity => {
+                 entity.HasMany(p => p.SubContracts)
+                 .WithOne(sub => sub.Contract)
+                 .HasForeignKey(sub => sub.ContractDocumentId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                 entity.Property(bp => bp.ContractKind).IsRequired();
+                 entity.Property(bp => bp.DocumentNumber).IsRequired();
+               
+           });
 
             modelBuilder.Entity<ContractParticipant>(entity => entity.HasOne(p => p.Organization).WithMany());
+
+            // другие сущности
+
+
+            modelBuilder.Entity<RfSubject>(entity => { 
+                entity.Property(rf => rf.Name).HasMaxLength(255);
+                entity.Property(rf => rf.Code).HasMaxLength(50);
+                entity.HasIndex(rf => rf.Guid).IsUnique();
+
+            });
+            modelBuilder.Entity<BillObject>(entity =>
+            {
+                entity.HasOne(p => p.RfSubject)
+                .WithMany()
+                .HasForeignKey(p => p.RfSubjectId).IsRequired();
+                entity.HasIndex(rf => rf.Guid).IsUnique();
+            });
 
            
 
@@ -59,6 +125,27 @@ namespace Infrastructure
                 .HasForeignKey(bo => bo.BillObjectId);
                 entity.HasOne(link => link.EnergyLinkObject).WithMany(elo => elo.BillObjectsToEnergyLinkObjects)
                 .HasForeignKey(bo => bo.EnergyLinkObjectId);
+                entity.Property(cd => cd.SDate).HasColumnType("Date");
+                entity.Property(cd => cd.EDate).HasColumnType("Date");
+            });
+
+
+            modelBuilder.Entity<BillPoint>(entity =>
+            {
+                entity.Property(bp => bp.Name).HasMaxLength(255);
+                entity.HasIndex(bp => bp.Guid).IsUnique();
+            });
+
+
+            modelBuilder.Entity<BillSideToBillPoint>(entity => {
+                entity.HasKey(c => new { c.EnergyLinkObjectId, c.BillPointId, c.SDate });
+                
+                entity.HasOne(link => link.EnergyLinkObject).WithMany(bs2bp => bs2bp.BillSideToBillPoints)
+                .HasForeignKey(link => link.EnergyLinkObjectId);
+                entity.HasOne(link => link.BillPoint).WithMany(elo => elo.BillSideToBillPoints)
+                .HasForeignKey(bo => bo.BillPointId);
+                entity.Property(cd => cd.SDate).HasColumnType("Date");
+                entity.Property(cd => cd.EDate).HasColumnType("Date");
             });
 
             modelBuilder.Entity<EnergyLinkObjectToBillPoint>(entity => {
@@ -70,79 +157,82 @@ namespace Infrastructure
 
                 entity.HasOne(link => link.EnergyLinkObject).WithMany(elo => elo.EnergyLinkObjectsToBillPoints)
                 .HasForeignKey(bo => bo.EnergyLinkObjectId);
+                entity.Property(cd => cd.SDate).HasColumnType("Date");
+                entity.Property(cd => cd.EDate).HasColumnType("Date");
             });
 
             modelBuilder.Entity<BillParam>(entity => {
 
-                entity.HasKey(c => new { c.EnergyLinkObjectToBillPointId, c.BillParamTypeId });
+                entity.HasKey(c => new { c.EnergyLinkObjectToBillPointId , c.BillParamType });
 
                 entity.HasOne(link => link.EnergyLinkObjectToBillPoint).WithMany(bp => bp.BillParams)
                 .HasForeignKey(bo => bo.EnergyLinkObjectToBillPointId);
 
-                entity.HasOne(link => link.BillParamType).WithMany();
-                
+               // entity.OwnsOne(bp => bp.BillParamTypeEnum);
+                //entity.HasOne(link => link.BillParamType).WithMany();
+
             });
 
 
-            modelBuilder.Entity<ContractKind>().HasData(
-                new ContractKind[] {
-                new ContractKind (1,"Договор энергоснабжения"),
-                new ContractKind (2,"Договор купили-продажи")
-                }
-                );
+            modelBuilder.Entity<BillPointToMeterPoint>(entity => {
 
-            modelBuilder.Entity<ParticipantType>().HasData(
-                new ParticipantType[] {
-                new ParticipantType (1,"Продавец электроэнергии"),
-                new ParticipantType (2,"Покупатель электроэнергии"),
-                new ParticipantType (3,"Население"),
-                new ParticipantType (4,"Организация оказывающая услуги населению"),
-                }
-                );
+                entity.HasKey(c => new { c.BillPointId, c.MeterPointId, c.SDate });
+                entity.HasOne(link => link.BillPoint).WithMany()
+                .HasForeignKey(bo => bo.BillPointId);
+                entity.HasOne(link => link.MeterPoint).WithMany()
+                .HasForeignKey(bo => bo.MeterPointId);
+                entity.Property(cd => cd.SDate).HasColumnType("Date");
+                entity.Property(cd => cd.EDate).HasColumnType("Date");
+            });
 
             modelBuilder.Entity<Organization>().HasData(
                new Organization[] {
-                new Organization (1,"ТНЭ"),
-                new Organization (2,"КТК"),
-                new Organization (3,"Дружба"),
+                new Organization (1,Guid.NewGuid(),"ТНЭ","ТНЭ",OrganizationTypeEnum.SalesService),
+                new Organization (2,Guid.NewGuid(),"КТК","КТК", OrganizationTypeEnum.Consumer),
+                new Organization (3,Guid.NewGuid(),"Дружба","Дружба", OrganizationTypeEnum.Consumer),
+                new Organization (4,Guid.NewGuid(),"Рога и копыта","Рога и копыта", OrganizationTypeEnum.None),
+                new Organization (5,Guid.NewGuid(),"Башкирэнерго","Башкирэнерго", OrganizationTypeEnum.SalesService | OrganizationTypeEnum.WireService),
                }
                );
 
             modelBuilder.Entity<BillPoint>().HasData(
               new BillPoint[] {
-                new BillPoint (1,"bp1",1),
-                new BillPoint (2,"bp1",2),
-                new BillPoint (3,"bp1",3),
+                new BillPoint (1,Guid.NewGuid(),"bp1"),
+                new BillPoint (2,Guid.NewGuid(),"bp2"),
+                new BillPoint (3,Guid.NewGuid(),"bp3"),
               }
               );
 
-            modelBuilder.Entity<BillParamType>().HasData(
-             new BillParamType[] {
-                new BillParamType (1,"Ценовая категория"),
-                new BillParamType (2,"Тарифный уровень напряжения"),
-                new BillParamType (3,"Знак вхождения"),
-                new BillParamType (4,"Категория мощности"),
-             }
-             );
+            modelBuilder.Entity<RfSubject>().HasData(
+            new RfSubject[] {
+                new RfSubject (1,Guid.NewGuid(),"Астраханская область","30","12"),
+                new RfSubject (2,Guid.NewGuid(),"Ставропольский край","26","07"),
+                new RfSubject (3,Guid.NewGuid(),"Краснодарский край","23","03"),
+            }
+            );
+
+            modelBuilder.Entity<MeterPoint>().HasData(
+           new MeterPoint[] {
+                new MeterPoint (1,Guid.NewGuid(),"ТИ-11"),
+                new MeterPoint (2,Guid.NewGuid(),"ТИ-12"),
+                new MeterPoint (3,Guid.NewGuid(),"ТИ-21"),
+                new MeterPoint (4,Guid.NewGuid(),"ТИ-31"),
+           }
+           );
+
+            modelBuilder.Entity<BillPointToMeterPoint>().HasData(
+           new BillPointToMeterPoint[] {
+                new BillPointToMeterPoint (1,1, DateTime.Now.Date,null),
+                new BillPointToMeterPoint (1,2, DateTime.Now.Date,null),
+                new BillPointToMeterPoint (2,3, DateTime.Now.Date,DateTime.Now.Date.AddDays(10)),
+                new BillPointToMeterPoint (3,4, DateTime.Now.Date.AddDays(-10),null),
+           }
+           );
+
         }
 
 
-        public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            // Dispatch Domain Events collection. 
-            // Choices:
-            // A) Right BEFORE committing data (EF SaveChanges) into the DB will make a single transaction including  
-            // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
-            // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
-            // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
-            await _mediator.DispatchDomainEventsAsync(this);
-
-            // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
-            // performed through the DbContext will be committed
-            var result = await base.SaveChangesAsync(cancellationToken);
-
-            return true;
-        }
+        
     }
 
     

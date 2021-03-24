@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Domain
 {
-    public class BillObjectToEnergyLinkObject
+    public class BillObjectToEnergyLinkObject : IPeriodEntity
     {
         public BillObject BillObject { get; private set; }
 

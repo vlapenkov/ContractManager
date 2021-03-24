@@ -22,9 +22,10 @@ namespace Infrastructure
         {
 
             var result = _db.Contracts
-                .Include(contract => contract.ContractKind)
+                .Include(contract => contract.SubContracts)
+                //.Include(contract => contract.ContractKind)
                 .Include(contract => contract.ContractParticipants)
-                    .ThenInclude(cp => cp.ParticipantType)
+                   // .ThenInclude(cp => cp.ParticipantType)
                 .Include(cp => cp.ContractParticipants)
                     .ThenInclude(cp => cp.Organization)
                 .Include(contract => contract.BillObjects)
@@ -32,7 +33,13 @@ namespace Infrastructure
                  .ThenInclude(bo2elo => bo2elo.EnergyLinkObject)
                  .ThenInclude(bo2elo => bo2elo.EnergyLinkObjectsToBillPoints)
                  .ThenInclude(elotbp => elotbp.BillParams)
-                 .ThenInclude(bp => bp.BillParamType)
+
+                .Include(contract => contract.BillObjects)
+                 .ThenInclude(bo => bo.BillObjectsToEnergyLinkObjects)
+                 .ThenInclude(bo2elo => bo2elo.EnergyLinkObject)
+                 .ThenInclude(bo2elo => bo2elo.EnergyLinkObjectsToBillPoints)
+                 .ThenInclude(bo2elo => bo2elo.BillPoint)
+                 
                  .FirstOrDefault(x => x.Id == id);
             
             return result;
