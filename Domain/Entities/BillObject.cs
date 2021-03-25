@@ -16,6 +16,7 @@ namespace Domain
         private BillObject() { }
 
         [Required]
+        [StringLength(255)]
         public string Name { get; private set; }
         public int ContractId { get; private set; }
 
@@ -23,11 +24,7 @@ namespace Domain
         
         public int RfSubjectId { get; }
 
-        /// <summary>
-        /// Объект расчета относится к изолированной территории
-        /// </summary>
-        public bool IsIsolation { get; }
-
+        
         public Guid Guid { get; private set; }
 
         public BillObject( string name, RfSubject rfSubject)
@@ -36,8 +33,7 @@ namespace Domain
             Name = name;
             RfSubject = rfSubject;            
         }
-
-        //private readonly List<BillObjectToEnergyLinkObject> _billObjectsToEnergyLinkObjects = new List<BillObjectToEnergyLinkObject>();
+        
         public virtual ICollection<BillObjectToEnergyLinkObject> BillObjectsToEnergyLinkObjects { get; private set; } = new HashSet<BillObjectToEnergyLinkObject>();
 
         public void AddEnergyLinkObject(EnergyLinkObject elo, DateTime sDate, DateTime? eDate=null)

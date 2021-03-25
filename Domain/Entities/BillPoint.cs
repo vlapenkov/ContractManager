@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Domain
@@ -9,7 +10,8 @@ namespace Domain
     {
         private BillPoint() { }
 
-        
+        [Required]
+        [StringLength(255)]
         public string Name { get; private set; }
         public Guid Guid { get; private set; }
 

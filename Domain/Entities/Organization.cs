@@ -2,6 +2,7 @@
 using Domain.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Domain
@@ -12,7 +13,13 @@ namespace Domain
     public class Organization : BaseEntity, IGlobalEntity
     {
         private Organization() { }
+
+        [Required]
+        [StringLength(255)]
         public string ShortName { get; private set; }
+
+        [Required]
+        [StringLength(1024)]
         public string LongName { get; private set; }
         public int? AcsId { get; private set; }
 
