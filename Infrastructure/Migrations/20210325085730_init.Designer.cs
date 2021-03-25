@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    [Migration("20210323131502_billpointtometerpoint_added")]
-    partial class billpointtometerpoint_added
+    [Migration("20210325085730_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("RfSubjectId")
                         .HasColumnType("integer");
@@ -101,6 +102,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
@@ -115,20 +117,20 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Guid = new Guid("954b7565-20ff-4321-9e8c-8e890953598a"),
-                            Name = "bp1"
+                            Guid = new Guid("b8d40d2b-b9f2-463f-a3e8-467dcfbb48ea"),
+                            Name = "ТП-1"
                         },
                         new
                         {
                             Id = 2,
-                            Guid = new Guid("ed2e5591-c148-4688-bd7c-f4250fa93165"),
-                            Name = "bp2"
+                            Guid = new Guid("2ee047a6-d87c-44b7-9e0e-f89bd526b1c3"),
+                            Name = "ТП-2"
                         },
                         new
                         {
                             Id = 3,
-                            Guid = new Guid("96351e37-a7f4-4734-b77f-47d55f294090"),
-                            Name = "bp3"
+                            Guid = new Guid("235f7a97-ac8d-47c9-bead-528ff21a005f"),
+                            Name = "ТП-3"
                         });
                 });
 
@@ -165,7 +167,9 @@ namespace Infrastructure.Migrations
                         .UseIdentityByDefaultColumn();
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
@@ -197,7 +201,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("EnergyLinkObjectId");
 
-                    b.ToTable("EnergyLinkObjectToBillPoint");
+                    b.ToTable("EnergyLinkObjectToBillPoints");
                 });
 
             modelBuilder.Entity("Domain.Entities.BillPointRule", b =>
@@ -249,33 +253,33 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("MeterPointId");
 
-                    b.ToTable("BillPointToMeterPoint");
+                    b.ToTable("BillPointToMeterPoints");
 
                     b.HasData(
                         new
                         {
                             BillPointId = 1,
                             MeterPointId = 1,
-                            SDate = new DateTime(2021, 3, 23, 0, 0, 0, 0, DateTimeKind.Local)
+                            SDate = new DateTime(2021, 3, 25, 0, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             BillPointId = 1,
                             MeterPointId = 2,
-                            SDate = new DateTime(2021, 3, 23, 0, 0, 0, 0, DateTimeKind.Local)
+                            SDate = new DateTime(2021, 3, 25, 0, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             BillPointId = 2,
                             MeterPointId = 3,
-                            SDate = new DateTime(2021, 3, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            EDate = new DateTime(2021, 4, 2, 0, 0, 0, 0, DateTimeKind.Local)
+                            SDate = new DateTime(2021, 3, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            EDate = new DateTime(2021, 4, 4, 0, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
                             BillPointId = 3,
                             MeterPointId = 4,
-                            SDate = new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Local)
+                            SDate = new DateTime(2021, 3, 15, 0, 0, 0, 0, DateTimeKind.Local)
                         });
                 });
 
@@ -390,6 +394,35 @@ namespace Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Domain.Entities.OremZone", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsIsolated")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsRate")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<int>("TimeOffset")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OremZones");
+                });
+
             modelBuilder.Entity("Domain.Entities.RfSubject", b =>
                 {
                     b.Property<int>("Id")
@@ -427,7 +460,7 @@ namespace Infrastructure.Migrations
                             Id = 1,
                             Code = "30",
                             CodeAts = "12",
-                            Guid = new Guid("3644330d-dc56-4a37-a23d-a8528132a41b"),
+                            Guid = new Guid("d8162092-2702-4ae3-a4f3-fbd1a85b6069"),
                             Name = "Астраханская область"
                         },
                         new
@@ -435,7 +468,7 @@ namespace Infrastructure.Migrations
                             Id = 2,
                             Code = "26",
                             CodeAts = "07",
-                            Guid = new Guid("6dc9ea60-5b2c-4287-a65f-4f8d3ebaa144"),
+                            Guid = new Guid("99b12c1a-5df8-4f13-96b9-1a46f74ac7bc"),
                             Name = "Ставропольский край"
                         },
                         new
@@ -443,9 +476,30 @@ namespace Infrastructure.Migrations
                             Id = 3,
                             Code = "23",
                             CodeAts = "03",
-                            Guid = new Guid("9b252216-0b32-4cf9-beca-da333de98e6c"),
+                            Guid = new Guid("8164c992-8c0b-42cb-bbb7-3b46461146cc"),
                             Name = "Краснодарский край"
                         });
+                });
+
+            modelBuilder.Entity("Domain.Entities.RfSubjectToOremZone", b =>
+                {
+                    b.Property<int>("RfSubjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OremZoneId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("SDate")
+                        .HasColumnType("Date");
+
+                    b.Property<DateTime?>("EDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("RfSubjectId", "OremZoneId", "SDate");
+
+                    b.HasIndex("OremZoneId");
+
+                    b.ToTable("RfSubjectToOremZones");
                 });
 
             modelBuilder.Entity("Domain.Organization", b =>
@@ -668,6 +722,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("BillPoint");
 
                     b.Navigation("EnergyLinkObject");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RfSubjectToOremZone", b =>
+                {
+                    b.HasOne("Domain.Entities.OremZone", "OremZone")
+                        .WithMany()
+                        .HasForeignKey("OremZoneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.RfSubject", "RfSubject")
+                        .WithMany()
+                        .HasForeignKey("RfSubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OremZone");
+
+                    b.Navigation("RfSubject");
                 });
 
             modelBuilder.Entity("Domain.Organization", b =>

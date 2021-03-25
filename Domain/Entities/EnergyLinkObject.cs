@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -8,8 +9,13 @@ namespace Domain
 {
     public class EnergyLinkObject : BaseEntity
     {
-        private EnergyLinkObject() { }
+        
+
+        [Required]
+        [StringLength(255)]
         public string Name { get; private set; }
+
+        private EnergyLinkObject() { }
         public EnergyLinkObject( string name)
         {          
             Name = name;
